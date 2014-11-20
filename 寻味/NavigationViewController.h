@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  NavigationViewController.h
 //  寻味
 //
 //  Created by Hao Liu on 11/19/14.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface NavigationViewController : UINavigationController
 
 @end
-
