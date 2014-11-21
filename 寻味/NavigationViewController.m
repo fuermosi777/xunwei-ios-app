@@ -17,14 +17,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:16], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:16], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
     
     [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"yellow"]
                              forBarMetrics:UIBarMetricsDefault];
     
     [self.navigationBar setShadowImage:[UIImage new]];
     
-    self.navigationBar.tintColor = [UIColor colorWithRed:0.93 green:0.35 blue:0.23 alpha:1];
+    self.navigationBar.tintColor = [UIColor whiteColor];
     
     
     // set bar button font

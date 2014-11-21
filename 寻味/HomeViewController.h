@@ -7,11 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 
-@interface HomeViewController : UIViewController
+@interface HomeViewController : UIViewController < UITextFieldDelegate>
 
 @property UIScrollView *scrollView;
-@property NSMutableArray *array;
+@property NSMutableArray *array; // all restaurants info
+@property (nonatomic, assign) id currentResponder;
+@property UIView *inputOverlay;
+@property MKMapView *mapView;
+@property NSString *searchText;
 
 - (void)loadComplete;
 

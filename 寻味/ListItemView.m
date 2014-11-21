@@ -42,12 +42,13 @@
         // title
         UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(imageHeight + SPACE * 3.0, SPACE, self.frame.size.width - imageHeight - SPACE * 3, 20)];
         title.textColor = [UIColor colorWithRed:0.9 green:0.56 blue:0.12 alpha:1];
+        title.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:16];
         title.text = [dict objectForKey:@"name"];
         [self addSubview:title];
         
         // subtitle
         UILabel *subTitle = [[UILabel alloc] initWithFrame:CGRectMake(imageHeight + SPACE * 3.0, SPACE + title.bounds.size.height, self.frame.size.width - imageHeight - SPACE * 3, 20)];
-        subTitle.font = [UIFont systemFontOfSize:12];
+        subTitle.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:12];
         subTitle.textColor = [UIColor colorWithRed:0.18 green:0.18 blue:0.18 alpha:1];
         subTitle.text = [NSString stringWithFormat:@"%@ %@ %@",[dict objectForKey:@"street1"],[dict objectForKey:@"city"],[dict objectForKey:@"postcode"]];
         [self addSubview:subTitle];

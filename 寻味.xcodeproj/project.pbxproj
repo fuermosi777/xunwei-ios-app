@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F3E49A71A1F107A00BEF70C /* XinGothic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F3E49A61A1F107A00BEF70C /* XinGothic.ttf */; };
+		3F4192301A1E3FA3008A8A0F /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F41922F1A1E3FA3008A8A0F /* DetailViewController.m */; };
+		3F4192331A1E708E008A8A0F /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4192321A1E708E008A8A0F /* MapViewController.m */; };
+		3F4192361A1E7380008A8A0F /* MarkerAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4192351A1E7380008A8A0F /* MarkerAnnotation.m */; };
+		3F4192391A1E7400008A8A0F /* PanelViewOnMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4192381A1E7400008A8A0F /* PanelViewOnMap.m */; };
 		3F4C23281A1DA655001C65DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4C23271A1DA655001C65DF /* main.m */; };
 		3F4C232B1A1DA655001C65DF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4C232A1A1DA655001C65DF /* AppDelegate.m */; };
 		3F4C23311A1DA655001C65DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F4C232F1A1DA655001C65DF /* Main.storyboard */; };
@@ -32,6 +37,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3F3E49A61A1F107A00BEF70C /* XinGothic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = XinGothic.ttf; sourceTree = "<group>"; };
+		3F41922E1A1E3FA3008A8A0F /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		3F41922F1A1E3FA3008A8A0F /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		3F4192311A1E708E008A8A0F /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		3F4192321A1E708E008A8A0F /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		3F4192341A1E7380008A8A0F /* MarkerAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkerAnnotation.h; sourceTree = "<group>"; };
+		3F4192351A1E7380008A8A0F /* MarkerAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkerAnnotation.m; sourceTree = "<group>"; };
+		3F4192371A1E7400008A8A0F /* PanelViewOnMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelViewOnMap.h; sourceTree = "<group>"; };
+		3F4192381A1E7400008A8A0F /* PanelViewOnMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelViewOnMap.m; sourceTree = "<group>"; };
 		3F4C23221A1DA655001C65DF /* 寻味.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "寻味.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F4C23261A1DA655001C65DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3F4C23271A1DA655001C65DF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -100,10 +114,15 @@
 		3F4C23241A1DA655001C65DF /* 寻味 */ = {
 			isa = PBXGroup;
 			children = (
+				3F3E49A61A1F107A00BEF70C /* XinGothic.ttf */,
 				3F4C23291A1DA655001C65DF /* AppDelegate.h */,
 				3F4C232A1A1DA655001C65DF /* AppDelegate.m */,
 				3F4C234B1A1DA69D001C65DF /* HomeViewController.h */,
 				3F4C234C1A1DA69D001C65DF /* HomeViewController.m */,
+				3F41922E1A1E3FA3008A8A0F /* DetailViewController.h */,
+				3F41922F1A1E3FA3008A8A0F /* DetailViewController.m */,
+				3F4192311A1E708E008A8A0F /* MapViewController.h */,
+				3F4192321A1E708E008A8A0F /* MapViewController.m */,
 				3F4C232F1A1DA655001C65DF /* Main.storyboard */,
 				3F4C234E1A1DA6EB001C65DF /* NavigationViewController.h */,
 				3F4C234F1A1DA6EB001C65DF /* NavigationViewController.m */,
@@ -116,6 +135,10 @@
 				3F4C23551A1DACAF001C65DF /* AlertView.m */,
 				3F4C23571A1DB539001C65DF /* ListItemView.h */,
 				3F4C23581A1DB539001C65DF /* ListItemView.m */,
+				3F4192341A1E7380008A8A0F /* MarkerAnnotation.h */,
+				3F4192351A1E7380008A8A0F /* MarkerAnnotation.m */,
+				3F4192371A1E7400008A8A0F /* PanelViewOnMap.h */,
+				3F4192381A1E7400008A8A0F /* PanelViewOnMap.m */,
 			);
 			path = "寻味";
 			sourceTree = "<group>";
@@ -247,6 +270,7 @@
 			files = (
 				3F4C23311A1DA655001C65DF /* Main.storyboard in Resources */,
 				3F4C23361A1DA655001C65DF /* LaunchScreen.xib in Resources */,
+				3F3E49A71A1F107A00BEF70C /* XinGothic.ttf in Resources */,
 				3F4C23331A1DA655001C65DF /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -298,9 +322,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F4192391A1E7400008A8A0F /* PanelViewOnMap.m in Sources */,
 				3F4C23501A1DA6EB001C65DF /* NavigationViewController.m in Sources */,
 				3F4C23531A1DAC36001C65DF /* GetRestaurants.m in Sources */,
+				3F4192361A1E7380008A8A0F /* MarkerAnnotation.m in Sources */,
 				3F4C232B1A1DA655001C65DF /* AppDelegate.m in Sources */,
+				3F4192331A1E708E008A8A0F /* MapViewController.m in Sources */,
+				3F4192301A1E3FA3008A8A0F /* DetailViewController.m in Sources */,
 				3F4C23591A1DB539001C65DF /* ListItemView.m in Sources */,
 				3F4C23561A1DACAF001C65DF /* AlertView.m in Sources */,
 				3F4C23281A1DA655001C65DF /* main.m in Sources */,
@@ -428,6 +456,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "寻味/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -439,6 +468,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "寻味/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
