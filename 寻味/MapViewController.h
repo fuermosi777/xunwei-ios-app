@@ -19,4 +19,6 @@
 @property NSMutableArray *markers;
 @property MKCoordinateRegion region;
 
+- (void)loadComplete;
+
 @end

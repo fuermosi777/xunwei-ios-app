@@ -14,6 +14,9 @@
 #import "DetailViewController.h"
 #import <MapKit/MapKit.h>
 #import "MapViewController.h"
+#import "UserTableViewController.h"
+#import "SigninTableViewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 
 @interface HomeViewController ()
@@ -22,20 +25,91 @@
 
 @implementation HomeViewController
 
+- (void)viewDidAppear:(BOOL)animated {
+    [self resetAvatar];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self loadData:nil];
+    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
     [self addRightButton];
     
-    // navigationbar
-    self.navigationController.navigationBar.topItem.title = @"寻味纽约";
+    if (!_indicator) {
+        [self initActivityIndicator];
+    }
+    
+    [self addAvatar];
+}
 
+- (void)resetAvatar {
+    if (self.checkLoginStatus) {
+
+        NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+        NSMutableDictionary *dict = [userInfo objectForKey:@"userinfo"];
+        
+        // start a new image download manager
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        NSURL *photo_URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@",[dict objectForKey:@"avatar"]]];
+        // start a new image download manager
+        [manager downloadWithURL:photo_URL
+                         options:0
+                        progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                            // NSLog(@"%li",(long)receivedSize);
+                        }
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                           if (image) {
+                               UIImage *newImage = [self imageWithImage:image scaledToSize:CGSizeMake(24, 24)];
+                               _avatar.image = newImage;
+                           }
+                       }
+         ];
+
+    } else {
+        _avatar.image = [UIImage imageNamed:@"orange-face"];
+    }
+}
+
+- (void)addAvatar {
+    // navigationbar
+    _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+    self.navigationController.navigationBar.topItem.titleView = _avatar;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chooseUserOrSignin)];
+    [_avatar addGestureRecognizer:tap];
+    [_avatar setUserInteractionEnabled:YES];
+    [_avatar.layer setCornerRadius:12.0];
+    [_avatar setClipsToBounds:YES];
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+- (void)chooseUserOrSignin {
+    if (self.checkLoginStatus) {
+        [self redirectToUserView];
+    } else {
+        [self redirectToSigninView];
+    }
+}
+
+- (void)redirectToUserView {
+    UserTableViewController *userVC = [[UserTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:userVC animated:YES];
+}
+
+- (void)redirectToSigninView {
+    SigninTableViewController *vc = [[SigninTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)reloadView {
     [self clearView];
     
-    [self loadData:nil];
+    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
 }
 
 - (void)clearView {
@@ -106,11 +180,27 @@
     [self.view addSubview:textField];
 }
 
+
+
+- (void)initActivityIndicator {
+    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:_indicator];
+    self.navigationItem.leftBarButtonItem = item;
+    _indicator.hidesWhenStopped = YES;
+}
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     // create overlay
     _inputOverlay = [[UIView alloc] initWithFrame:self.view.bounds];
     _inputOverlay.backgroundColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:0.8f];
-    [self.view addSubview:_inputOverlay];
+    
+    //animation
+    [UIView transitionWithView:self.view duration:0.3
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^ { [self.view addSubview:_inputOverlay]; }
+                    completion:nil];
+    
+    
     [self.view bringSubviewToFront:textField];
     
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resignOnTap:)];
@@ -129,7 +219,7 @@
         [textField resignFirstResponder];
 
         [self clearView];
-        [self loadData:_searchText];
+        [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@",_searchText]];
         return NO;
     } else {
         return YES;
@@ -189,16 +279,10 @@
 }
 
 - (void)loadData:(NSString *)text {
+    [_indicator startAnimating];
     GetRestaurants *GR = [[GetRestaurants alloc] init];
-    
     NSString *urlString = [NSString new];
-    if (text) {
-        urlString = [NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@",text];
-        
-    } else {
-        urlString = [NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"];
-    }
-    urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -210,6 +294,7 @@
 }
 
 - (void)loadComplete {
+    [_indicator stopAnimating];
     NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
     _array = [userInfo objectForKey:@"restaurants"];
     
@@ -221,6 +306,15 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)checkLoginStatus {
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    NSString *username = [userInfo objectForKey:@"username"];
+    if (username) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
 
 
 /*

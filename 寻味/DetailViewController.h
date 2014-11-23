@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 
 @interface DetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
 
 @property NSMutableDictionary *dict;
+@property MKMapView *mapView;
 @property NSMutableArray *reviewArray;
 @property UITableView *tableView;
+@property (strong, nonatomic) CLLocationManager *locationManager;
+@property MKCoordinateRegion region;
 
 @end

@@ -42,6 +42,7 @@
     
     // send complete signal
     [_delegate loadComplete];
+    [_delegate2 loadComplete];
     
 }
 @end

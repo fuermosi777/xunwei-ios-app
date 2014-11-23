@@ -11,13 +11,17 @@
 
 @interface HomeViewController : UIViewController < UITextFieldDelegate>
 
+@property UIActivityIndicatorView *indicator;
+
 @property UIScrollView *scrollView;
 @property NSMutableArray *array; // all restaurants info
 @property (nonatomic, assign) id currentResponder;
 @property UIView *inputOverlay;
 @property MKMapView *mapView;
 @property NSString *searchText;
+@property UIImageView *avatar;
 
 - (void)loadComplete;
+- (void)resetAvatar;
 
 @end

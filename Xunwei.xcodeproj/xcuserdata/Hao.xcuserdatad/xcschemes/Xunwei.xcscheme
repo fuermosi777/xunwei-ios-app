@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
-               BuildableName = "&#x5bfb;&#x5473;.app"
-               BlueprintName = "&#x5bfb;&#x5473;"
-               ReferencedContainer = "container:&#x5bfb;&#x5473;.xcodeproj">
+               BuildableName = "Xunwei.app"
+               BlueprintName = "Xunwei"
+               ReferencedContainer = "container:Xunwei.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3F4C233A1A1DA655001C65DF"
-               BuildableName = "&#x5bfb;&#x5473;Tests.xctest"
-               BlueprintName = "&#x5bfb;&#x5473;Tests"
-               ReferencedContainer = "container:&#x5bfb;&#x5473;.xcodeproj">
+               BuildableName = "XunweiTests.xctest"
+               BlueprintName = "XunweiTests"
+               ReferencedContainer = "container:Xunwei.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3F4C233A1A1DA655001C65DF"
-               BuildableName = "&#x5bfb;&#x5473;Tests.xctest"
-               BlueprintName = "&#x5bfb;&#x5473;Tests"
-               ReferencedContainer = "container:&#x5bfb;&#x5473;.xcodeproj">
+               BuildableName = "XunweiTests.xctest"
+               BlueprintName = "XunweiTests"
+               ReferencedContainer = "container:Xunwei.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
-            BuildableName = "&#x5bfb;&#x5473;.app"
-            BlueprintName = "&#x5bfb;&#x5473;"
-            ReferencedContainer = "container:&#x5bfb;&#x5473;.xcodeproj">
+            BuildableName = "Xunwei.app"
+            BlueprintName = "Xunwei"
+            ReferencedContainer = "container:Xunwei.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
-            BuildableName = "&#x5bfb;&#x5473;.app"
-            BlueprintName = "&#x5bfb;&#x5473;"
-            ReferencedContainer = "container:&#x5bfb;&#x5473;.xcodeproj">
+            BuildableName = "Xunwei.app"
+            BlueprintName = "Xunwei"
+            ReferencedContainer = "container:Xunwei.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
-            BuildableName = "&#x5bfb;&#x5473;.app"
-            BlueprintName = "&#x5bfb;&#x5473;"
-            ReferencedContainer = "container:&#x5bfb;&#x5473;.xcodeproj">
+            BuildableName = "Xunwei.app"
+            BlueprintName = "Xunwei"
+            ReferencedContainer = "container:Xunwei.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

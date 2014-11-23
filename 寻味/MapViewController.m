@@ -11,6 +11,7 @@
 #import "MarkerAnnotation.h"
 #import "PanelViewOnMap.h"
 #import "DetailViewController.h"
+#import "GetRestaurants.h"
 
 @interface MapViewController () <CLLocationManagerDelegate>
 
@@ -54,6 +55,44 @@
     
     // add button
     [self addFocusButton];
+    
+    // add navigationbar right button
+    [self addRightButton];
+}
+
+- (void)addRightButton {
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"在附近搜索"
+                                                                    style:UIBarButtonItemStyleDone
+                                                                   target:self
+                                                                   action:@selector(searchNearby)];
+    self.navigationItem.rightBarButtonItem = rightButton;
+}
+
+- (void)searchNearby {
+    CLLocationCoordinate2D coord = _region.center;
+    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&lng=%f&lat=%f",coord.longitude,coord.latitude]];
+}
+
+- (void)loadData:(NSString *)text {
+    GetRestaurants *GR = [[GetRestaurants alloc] init];
+    NSString *urlString = [NSString new];
+    urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    __unused NSURLConnection *fetchConn = [[NSURLConnection alloc] initWithRequest:request
+                                                                          delegate:GR
+                                                                  startImmediately:YES];
+    // 回调关键
+    GR.delegate2 = self;
+}
+
+- (void)loadComplete {
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    _array = [userInfo objectForKey:@"restaurants"];
+    
+    [self clearMarkers];
+    [self loadMarkers];
 }
 
 // 收到当前位置更新的消息...
@@ -74,7 +113,7 @@
     _region = region;
     
     if (!_oneLocation) { // 获得唯一位置了
-        [_mapView setRegion:targetRegion]; // 地图居中在当前位置
+        [_mapView setRegion:targetRegion]; // 地图居中在first restaurant found
         _oneLocation = currentLocation;
     }
     
@@ -204,6 +243,15 @@
         [_scrollView scrollRectToVisible:frame animated:YES];
     }
     
+}
+
+- (void)clearMarkers {
+    if (_scrollView) {
+        [_scrollView removeFromSuperview];
+    }
+    if (_markers) {
+        [_mapView removeAnnotations:[_mapView annotations]];
+    }
 }
 
 

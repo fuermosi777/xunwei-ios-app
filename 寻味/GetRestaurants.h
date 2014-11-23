@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "HomeViewController.h"
+#import "MapViewController.h"
 
 @interface GetRestaurants : NSObject
 {
     NSMutableData *incomingData;
 }
 @property (nonatomic, assign) HomeViewController *delegate; // 声明代理
+@property (nonatomic, assign) MapViewController *delegate2;
 
 @end
