@@ -1,12 +1,18 @@
 PODS:
+  - GBVersionTracking (1.2.0)
+  - NYXImagesKit (2.3)
   - SDWebImage (3.7.1):
     - SDWebImage/Core
   - SDWebImage/Core (3.7.1)
 
 DEPENDENCIES:
-  - SDWebImage
+  - GBVersionTracking
+  - NYXImagesKit
+  - SDWebImage (~> 3.6)
 
 SPEC CHECKSUMS:
+  GBVersionTracking: 4e1004f12dadb9e2aedfe99e8d4ee591596f720f
+  NYXImagesKit: 1c9f228ae78fab475d267b3b3a1308e0fba11731
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
 
 COCOAPODS: 0.34.4

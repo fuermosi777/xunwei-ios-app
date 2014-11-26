@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
+               BlueprintIdentifier = "3FEFE8721A2650BC00ACFBF4"
                BuildableName = "Xunwei.app"
                BlueprintName = "Xunwei"
                ReferencedContainer = "container:Xunwei.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F4C233A1A1DA655001C65DF"
+               BlueprintIdentifier = "3FEFE88B1A2650BD00ACFBF4"
                BuildableName = "XunweiTests.xctest"
                BlueprintName = "XunweiTests"
                ReferencedContainer = "container:Xunwei.xcodeproj">
@@ -46,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F4C233A1A1DA655001C65DF"
+               BlueprintIdentifier = "3FEFE88B1A2650BD00ACFBF4"
                BuildableName = "XunweiTests.xctest"
                BlueprintName = "XunweiTests"
                ReferencedContainer = "container:Xunwei.xcodeproj">
@@ -56,7 +56,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
+            BlueprintIdentifier = "3FEFE8721A2650BC00ACFBF4"
             BuildableName = "Xunwei.app"
             BlueprintName = "Xunwei"
             ReferencedContainer = "container:Xunwei.xcodeproj">
@@ -75,7 +75,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
+            BlueprintIdentifier = "3FEFE8721A2650BC00ACFBF4"
             BuildableName = "Xunwei.app"
             BlueprintName = "Xunwei"
             ReferencedContainer = "container:Xunwei.xcodeproj">
@@ -93,7 +93,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F4C23211A1DA655001C65DF"
+            BlueprintIdentifier = "3FEFE8721A2650BC00ACFBF4"
             BuildableName = "Xunwei.app"
             BlueprintName = "Xunwei"
             ReferencedContainer = "container:Xunwei.xcodeproj">
