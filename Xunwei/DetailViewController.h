@@ -15,7 +15,5 @@
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) NSMutableArray *reviewArray;
 @property (strong, nonatomic) UITableView *tableView;
-@property (strong, nonatomic) CLLocationManager *locationManager;
-@property MKCoordinateRegion region;
 
 @end

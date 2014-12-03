@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>339704A8-F909-41DF-B68E-5C75CA383D01</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Xunwei</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>B3E238BCFB615B205CFA062A73789EAD99538B29</key>
+		<string>https://github.com/fuermosi777/xunwei-ios-app.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Xunwei.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>B3E238BCFB615B205CFA062A73789EAD99538B29</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/fuermosi777/xunwei-ios-app.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B3E238BCFB615B205CFA062A73789EAD99538B29</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B3E238BCFB615B205CFA062A73789EAD99538B29</string>
+			<key>IDESourceControlWCCName</key>
+			<string>xunwei-ios-app</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -17,6 +17,7 @@
 #import "UserTableViewController.h"
 #import "SigninTableViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <NYXImagesKit/NYXImagesKit.h>
 
 @interface HomeViewController ()
 
@@ -41,16 +42,26 @@
 }
 
 - (void)resetAvatar {
-    if (self.checkLoginStatus) {
 
+    
+    if (self.checkLoginStatus && !_avatarImage) {
+        // get url
         NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
         NSMutableDictionary *dict = [userInfo objectForKey:@"userinfo"];
-        
-        // start a new image download manager
         NSURL *photo_URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@",[dict objectForKey:@"avatar"]]];
         
-        [_avatar sd_setImageWithURL:photo_URL];
-
+        // load image
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:photo_URL
+                                                            options:0
+                                                           progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                                               // progression tracking code
+                                                           }
+                                                          completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                              if (image && finished) {
+                                                                  UIImage *imageScaled = [image scaleToFitSize:CGSizeMake(24, 24)];
+                                                                  _avatar.image = imageScaled;
+                                                              }
+                                                          }];
     } else {
         _avatar.image = [UIImage imageNamed:@"orange-face"];
     }
@@ -67,12 +78,9 @@
     [_avatar setClipsToBounds:YES];
 }
 
-- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
-    UIGraphicsBeginImageContext(newSize);
-    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
+- (void)removeAvatar {
+    [_avatar removeFromSuperview];
+    _avatar = nil;
 }
 
 - (void)chooseUserOrSignin {
@@ -104,7 +112,7 @@
 }
 
 - (void)addRightButton {
-    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"refresh"] landscapeImagePhone:nil 
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"refresh"] landscapeImagePhone:nil
                                                                     style:UIBarButtonItemStyleDone
                                                                    target:self
                                                                    action:@selector(reloadView)];
@@ -112,28 +120,22 @@
 }
 
 - (void)showView {
-    [self addMap];
+    [self addMapSnapshot];
     [self addScroll];
 }
 
-- (void)addMap {
-    // 地图
-    _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 100)];
-    _mapView.showsPointsOfInterest = NO;
-    // mapView.delegate = self;
+- (void)addMapSnapshot {
+    // create snap shot block and add it to the view
+    _mapSnapshotView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 100)];
+    [self.view addSubview:_mapSnapshotView];
     
-    [self.view addSubview:_mapView];
-    
-    // set region and zoom
-    CLLocationCoordinate2D startCoord;
-    startCoord.latitude = 40.714650000000f;
-    startCoord.longitude = -73.997755000000;
-    [_mapView setRegion:MKCoordinateRegionMakeWithDistance(startCoord, 200, 200) animated:YES];
+    // fill image into block
+    [self snapshotMapView:_mapSnapshotView];
     
     // add transparent overlay
-    UIView *overlay = [[UIView alloc] initWithFrame:_mapView.bounds];
+    UIView *overlay = [[UIView alloc] initWithFrame:_mapSnapshotView.bounds];
     [overlay setBackgroundColor:[UIColor colorWithRed:0.99 green:0.65 blue:0.18 alpha:0.5]];
-    [_mapView addSubview:overlay];
+    [_mapSnapshotView addSubview:overlay];
     
     // add address label
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.view.frame.size.width, 40)];
@@ -147,8 +149,8 @@
     // add click event
     UITapGestureRecognizer *awesomeViewSingleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                                  action:@selector(redirectToMapView)];
-    [label addGestureRecognizer:awesomeViewSingleFingerTap];
-    [label setUserInteractionEnabled:YES];
+    [_mapSnapshotView addGestureRecognizer:awesomeViewSingleFingerTap];
+    [_mapSnapshotView setUserInteractionEnabled:YES];
     
     // add search box
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 55 + 64, self.view.frame.size.width - 60, 30)];
@@ -163,10 +165,31 @@
                                                                                    NSForegroundColorAttributeName: [UIColor lightGrayColor],
                                                                                    NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
                                                                                    }
-     ];
+                                       ];
     [self.view addSubview:textField];
 }
 
+- (void)snapshotMapView:(UIImageView *)imageView {
+    // coor
+    CLLocationCoordinate2D startCoord;
+    startCoord.latitude = 40.714650000000f;
+    startCoord.longitude = -73.997755000000;
+    
+    MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
+    options.region = MKCoordinateRegionMakeWithDistance(startCoord, 200, 200);
+    options.mapType = MKMapTypeStandard;
+    options.showsBuildings = NO;
+    options.showsPointsOfInterest = NO;
+    options.size = CGSizeMake(self.view.frame.size.width, 100);
+    
+    MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+    [snapshotter startWithQueue:dispatch_get_main_queue() completionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
+        if( error ) {
+        } else {
+            [imageView setImage:snapshot.image];
+        }
+    }];
+}
 
 
 - (void)initActivityIndicator {
@@ -204,7 +227,7 @@
     if (_searchText) {
         [_inputOverlay removeFromSuperview];
         [textField resignFirstResponder];
-
+        
         [self clearView];
         [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@",_searchText]];
         return NO;
@@ -250,13 +273,13 @@
 
 - (void)redirectToDetailView:(UITapGestureRecognizer *)tap {
     DetailViewController *vc = [[DetailViewController alloc] init];
-
+    
     for (int i = 0; i < [_array count]; i++) {
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
         dict = [_array objectAtIndex:i];
         if ([[[_array objectAtIndex:i] objectForKey:@"id"] intValue] == tap.view.tag) {
             [vc setDict:dict];
-
+            
         }
     }
     
@@ -271,7 +294,7 @@
     NSString *urlString = [NSString new];
     urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
-
+    
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     __unused NSURLConnection *fetchConn = [[NSURLConnection alloc] initWithRequest:request
                                                                           delegate:GR
@@ -305,13 +328,13 @@
 
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

@@ -467,8 +467,8 @@
         {
             // 地图
             _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
+            _mapView.showsUserLocation = YES;
             _mapView.showsPointsOfInterest = NO;
-            // mapView.delegate = self;
             
             [myCellView addSubview:_mapView];
             
@@ -479,19 +479,8 @@
             [_mapView setRegion:MKCoordinateRegionMakeWithDistance(startCoord, 100, 100) animated:YES];
             
             // marker
-            MarkerAnnotation *marker = [[MarkerAnnotation alloc] initWithLocation:startCoord];
+            MarkerAnnotation *marker = [[MarkerAnnotation alloc] initWithLocation:startCoord title:@"" subTitle:@""];
             [_mapView addAnnotation:marker];
-            
-            // location mger
-            _locationManager = [[CLLocationManager alloc] init];
-            _locationManager.delegate = self;
-            // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
-            if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                [_locationManager requestWhenInUseAuthorization];
-            }
-            [_locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
-            [_locationManager startUpdatingLocation]; // 开始更新当前位置信息
-            [_locationManager setPausesLocationUpdatesAutomatically:YES]; // 允许自动停止更新位置信息
             
             // focus button
             UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
@@ -552,19 +541,13 @@
 }
 
 - (void)focusMe {
-    [_mapView setRegion:_region animated:YES];
+    MKCoordinateRegion region;
+    region.center = _mapView.userLocation.coordinate;
+    region.span = MKCoordinateSpanMake(0.001, 0.001);
+    
+    region = [_mapView regionThatFits:region];
+    [_mapView setRegion:region animated:YES];
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    CLLocation *currentLocation = [locations lastObject];
-    
-    CLLocationCoordinate2D coord = {.latitude = currentLocation.coordinate.latitude, .longitude =  currentLocation.coordinate.longitude};
-    MKCoordinateSpan span = {.latitudeDelta =  0.01, .longitudeDelta =  0.01};
-    MKCoordinateRegion region = {coord, span};
-    _region = region;
-    
-    [_mapView setShowsUserLocation:YES];
-}
 
 @end
