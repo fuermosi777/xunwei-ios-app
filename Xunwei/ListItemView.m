@@ -10,6 +10,7 @@
 
 #import "ListItemView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "JSFavStarControl.h"
 
 @implementation ListItemView
 
@@ -20,7 +21,7 @@
         CGFloat imageHeight = self.frame.size.height - SPACE * 2.0;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(SPACE, SPACE, imageHeight, imageHeight)];
         imageView.clipsToBounds = YES;
-        imageView.layer.cornerRadius = 4.0;
+        imageView.layer.cornerRadius = 14.0;
         [self addSubview:imageView];
         
         // start a new image download manager
@@ -41,11 +42,12 @@
         subTitle.text = [NSString stringWithFormat:@"%@ %@ %@",[dict objectForKey:@"street1"],[dict objectForKey:@"city"],[dict objectForKey:@"postcode"]];
         [self addSubview:subTitle];
         
-        // layer
-        CALayer *border = [CALayer layer];
-        border.frame = CGRectMake(imageHeight + SPACE * 2.0, 0.0f, self.frame.size.width, .3f);
-        border.backgroundColor = [UIColor colorWithRed:0.78 green:0.78 blue:0.8 alpha:1].CGColor;
-        [self.layer addSublayer:border];
+        // star
+        UILabel *starlabel = [[UILabel alloc] initWithFrame:CGRectMake(imageHeight + SPACE * 3.0, SPACE + title.bounds.size.height + subTitle.bounds.size.height, self.frame.size.width - imageHeight - SPACE * 3, 20)];
+        starlabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+        starlabel.textColor = [UIColor colorWithRed:0.61 green:0.71 blue:0.02 alpha:1];
+        starlabel.text = [NSString stringWithFormat:@"🔥 %@",[dict objectForKey:@"star"]];
+        [self addSubview:starlabel];
     }
     return self;
 }

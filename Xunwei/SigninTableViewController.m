@@ -58,6 +58,18 @@
     }
 }
 
+#pragma mark - button action
+- (void)disableButton {
+    // disable button
+    _signinButton.userInteractionEnabled = NO;
+    _signinButton.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1];
+}
+
+- (void)enableButton {
+    _signinButton.userInteractionEnabled = YES;
+    _signinButton.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:1];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -107,6 +119,9 @@
                     textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     textField.delegate = self;
                     textField.tag = USERNAMEFIELD;
+                    
+                    textField.autocapitalizationType = UITextAutocapitalizationTypeNone; // first letter capitalization disable
+                    
                     [cell addSubview:textField];
                     break;
                 }
@@ -135,15 +150,15 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
-                    button.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
-                    button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-                    [button setTitle:@"登录" forState:UIControlStateNormal];
-                    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    _signinButton = [[UIButton alloc] initWithFrame:cell.bounds];
+                    _signinButton.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
+                    _signinButton.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                    [_signinButton setTitle:@"登录" forState:UIControlStateNormal];
+                    [_signinButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
                     
-                    [cell addSubview:button];
+                    [cell addSubview:_signinButton];
                     
-                    [button addTarget:self action:@selector(signin) forControlEvents:UIControlEventTouchUpInside];
+                    [_signinButton addTarget:self action:@selector(signin) forControlEvents:UIControlEventTouchUpInside];
                     break;
                 }
                 case 1:
@@ -208,6 +223,9 @@
     [self.view endEditing:YES];
     
     if (_username && _password) {
+        // disable button
+        [self disableButton];
+        
         // 1 start a post data
         NSString *post = [NSString stringWithFormat:@"username=%@&password=%@",self.username,self.password];
 
@@ -280,6 +298,9 @@
         [self.navigationController popToRootViewControllerAnimated:YES];
         
     } else { // unexplained error
+        // enable
+        [self enableButton];
+        
         AlertView *alert = [[AlertView alloc] init];
         [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
         

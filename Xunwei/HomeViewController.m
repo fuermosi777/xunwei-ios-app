@@ -33,6 +33,8 @@
     [super viewDidLoad];
     [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
     [self addRightButton];
+    [self addMapSnapshot];
+    [self addTable];
     
     if (!_indicator) {
         [self initActivityIndicator];
@@ -42,8 +44,6 @@
 }
 
 - (void)resetAvatar {
-
-    
     if (self.checkLoginStatus && !_avatarImage) {
         // get url
         NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
@@ -102,13 +102,7 @@
 }
 
 - (void)reloadView {
-    [self clearView];
-    
     [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
-}
-
-- (void)clearView {
-    [[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 }
 
 - (void)addRightButton {
@@ -119,10 +113,52 @@
     self.navigationItem.rightBarButtonItem = rightButton;
 }
 
-- (void)showView {
-    [self addMapSnapshot];
-    [self addScroll];
+- (void)addTable {
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, self.view.frame.size.height - 164)];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:_tableView];
 }
+
+#pragma mark - table
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section
+    return [_array count];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSInteger rowHeight = LISTITEMHEIGHT;
+    return rowHeight;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                   reuseIdentifier:@"Cell"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    // edit cell
+    NSMutableDictionary *dict = [_array objectAtIndex:indexPath.row];
+    ListItemView *listItemView = [[ListItemView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, LISTITEMHEIGHT)
+                                                          dataSource:dict];
+    
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(redirectToDetailView:)];
+    listItemView.tag = [[dict objectForKey:@"id"] intValue];
+    
+    [listItemView addGestureRecognizer:tap];
+    [listItemView setUserInteractionEnabled:YES];
+    
+    [cell addSubview:listItemView];
+    return cell;
+}
+
 
 - (void)addMapSnapshot {
     // create snap shot block and add it to the view
@@ -134,7 +170,7 @@
     
     // add transparent overlay
     UIView *overlay = [[UIView alloc] initWithFrame:_mapSnapshotView.bounds];
-    [overlay setBackgroundColor:[UIColor colorWithRed:0.99 green:0.65 blue:0.18 alpha:0.5]];
+    [overlay setBackgroundColor:[UIColor colorWithRed:0.99 green:0.65 blue:0.18 alpha:0.6]];
     [_mapSnapshotView addSubview:overlay];
     
     // add address label
@@ -170,6 +206,7 @@
 }
 
 - (void)snapshotMapView:(UIImageView *)imageView {
+    /*
     // coor
     CLLocationCoordinate2D startCoord;
     startCoord.latitude = 40.714650000000f;
@@ -189,6 +226,21 @@
             [imageView setImage:snapshot.image];
         }
     }];
+     */
+    float latitude, longitude;
+    if ([_array count] > 0) {
+        NSDictionary *dict = [_array objectAtIndex:0];
+        latitude = [[dict objectForKey:@"latitude"] floatValue];
+        longitude = [[dict objectForKey:@"longitude"] floatValue];
+    } else {
+        latitude = 40.7242071;
+        longitude = -73.9946707;
+    }
+    
+    NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?center=%f,%f&scale=2&zoom=15&size=%lix100&sensor=true",latitude, longitude,(long)(self.view.frame.size.width)];
+    NSURL *mapUrl = [NSURL URLWithString:[staticMapUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    UIImage *image = [UIImage imageWithData: [NSData dataWithContentsOfURL:mapUrl]];
+    imageView.image = image;
 }
 
 
@@ -228,7 +280,6 @@
         [_inputOverlay removeFromSuperview];
         [textField resignFirstResponder];
         
-        [self clearView];
         [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@",_searchText]];
         return NO;
     } else {
@@ -245,30 +296,6 @@
 - (void)resignOnTap:(id)iSender {
     [self.currentResponder resignFirstResponder];
     [_inputOverlay removeFromSuperview];
-    
-}
-
-- (void)addScroll {
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, self.view.frame.size.height)];
-    _scrollView.contentInset = UIEdgeInsetsMake(0, 0, 164, 0);
-    [self.view addSubview:_scrollView];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [_array count] * LISTITEMHEIGHT);
-    _scrollView.showsVerticalScrollIndicator = NO;
-    
-    for (int i = 0; i < [_array count]; i++) {
-        NSMutableDictionary *dict = [_array objectAtIndex:i];
-        ListItemView *listItemView = [[ListItemView alloc] initWithFrame:CGRectMake(0, LISTITEMHEIGHT * i, self.view.frame.size.width, LISTITEMHEIGHT)
-                                                              dataSource:dict];
-        [_scrollView addSubview:listItemView];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(redirectToDetailView:)];
-        listItemView.tag = [[dict objectForKey:@"id"] intValue];
-        
-        [listItemView addGestureRecognizer:tap];
-        [listItemView setUserInteractionEnabled:YES];
-    }
 }
 
 - (void)redirectToDetailView:(UITapGestureRecognizer *)tap {
@@ -308,7 +335,7 @@
     NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
     _array = [userInfo objectForKey:@"restaurants"];
     
-    [self showView];
+    [_tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {

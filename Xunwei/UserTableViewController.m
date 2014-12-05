@@ -6,15 +6,21 @@
 //  Copyright (c) 2014 Hao Liu. All rights reserved.
 //
 
-#define ACTIONSECTION 0
+#define ACTIONSECTION 1
+#define INFOSECTION 0
 
 #import "UserTableViewController.h"
+#import "AlertView.h"
 
 @interface UserTableViewController ()
 
 @end
 
 @implementation UserTableViewController
+
+- (void)viewDidAppear:(BOOL)animated {
+    [self loadData];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -31,11 +37,79 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - load data
+- (void)loadData {
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    NSString *username = [userInfo objectForKey:@"username"];
+    
+    // 1 start a post data
+    NSString *post = [NSString stringWithFormat:@"username=%@",username];
+    
+    NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding
+                          allowLossyConversion:YES];
+    // 2 get data length
+    NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[postData length]];
+    // 3 create url request
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    NSURL *url = [NSURL URLWithString:@"http://xun-wei.com/app/user/"];
+    [request setURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:postData];
+    // 4 create connection
+    __unused NSURLConnection *conn = [[NSURLConnection alloc]initWithRequest:request
+                                                                    delegate:self
+                                                            startImmediately:YES];
+}
+
+// data receive part
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    incomingData = nil;
+    if (!incomingData) {
+        incomingData = [[NSMutableData alloc] init];
+    }
+    
+    [incomingData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    
+    AlertView *alert = [[AlertView alloc] init];
+    [alert showCustomErrorWithTitle:@"错误" message:@"网络连接错误" cancelButton:@"确定"];
+}
+
+// 数据全部接受完毕
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    
+    NSError *error = nil;
+    
+    NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:incomingData
+                                                                options:kNilOptions
+                                                                  error:&error];
+    NSInteger status = [[dict objectForKey:@"status"] integerValue];
+    NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
+    NSDictionary *info = [dict objectForKey:@"info"];
+
+    if (status == 1) { // login success
+        _dict = info;
+        [self.tableView reloadData];
+        
+    } else { // unexplained error
+        
+        AlertView *alert = [[AlertView alloc] init];
+        [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
+        
+    }
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -48,8 +122,23 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:@"Cell"];
     switch (indexPath.section) {
-        case ACTIONSECTION:
-        {
+        case INFOSECTION: {
+            switch (indexPath.row) {
+                case 0:
+                {
+                    if (_dict){
+                        NSString *dateJoined = [NSString stringWithFormat:@"加入时间: %@", [_dict objectForKey:@"date_joined"]];
+                        cell.textLabel.text = dateJoined;
+                        cell.textLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+        case ACTIONSECTION: {
             switch (indexPath.row) {
                 case 0:
                 {
@@ -73,7 +162,7 @@
             break;
     }
     // Configure the cell...
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 

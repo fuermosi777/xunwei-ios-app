@@ -75,6 +75,7 @@
                 case 0:
                 {
                     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(15, 0, cell.frame.size.width - 30, cell.frame.size.height)];
+                    textField.autocapitalizationType = UITextAutocapitalizationTypeNone; // first letter capitalization disable
                     textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"用户名"
                                                                                       attributes:@{
                                                                                                    NSForegroundColorAttributeName: [UIColor lightGrayColor],
@@ -125,13 +126,13 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
-                    button.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
-                    button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-                    [button setTitle:@"注册新账户" forState:UIControlStateNormal];
-                    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    [button addTarget:self action:@selector(signup) forControlEvents:UIControlEventTouchUpInside];
-                    [cell addSubview:button];
+                    _signupButton = [[UIButton alloc] initWithFrame:cell.bounds];
+                    _signupButton.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
+                    _signupButton.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                    [_signupButton setTitle:@"注册新账户" forState:UIControlStateNormal];
+                    [_signupButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    [_signupButton addTarget:self action:@selector(signup) forControlEvents:UIControlEventTouchUpInside];
+                    [cell addSubview:_signupButton];
                     break;
                 }
                 default:
@@ -142,7 +143,7 @@
         default:
             break;
     }
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
@@ -174,6 +175,9 @@
     [self.view endEditing:YES];
     
     if (_username && _password && _email) {
+        // disable button
+        [self disableButton];
+        
         // 1 start a post data
         NSString *post = [NSString stringWithFormat:@"username=%@&password=%@&email=%@",self.username,self.password,_email];
         
@@ -197,6 +201,18 @@
         AlertView *alert = [[AlertView alloc] init];
         [alert showCustomErrorWithTitle:@"错误" message:@"信息填写不正确" cancelButton:@"确定"];
     }
+}
+
+#pragma mark - button action
+- (void)disableButton {
+    // disable button
+    _signupButton.userInteractionEnabled = NO;
+    _signupButton.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1];
+}
+
+- (void)enableButton {
+    _signupButton.userInteractionEnabled = YES;
+    _signupButton.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:1];
 }
 
 #pragma mark - conntection delegate
@@ -230,6 +246,7 @@
     NSInteger status = [[dict objectForKey:@"status"] integerValue];
     NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
     NSMutableDictionary *userinfo = [dict objectForKey:@"userinfo"];
+    
     if (status == 1) { // login success
         NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
         [userInfo setValue:self.username forKey:@"username"];
@@ -241,6 +258,9 @@
         [self.navigationController popToRootViewControllerAnimated:YES];
         
     } else { // unexplained error
+        // enable button
+        [self enableButton];
+        
         AlertView *alert = [[AlertView alloc] init];
         [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
         

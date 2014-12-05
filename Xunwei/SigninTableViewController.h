@@ -14,5 +14,6 @@
 }
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *password;
+@property (strong, nonatomic) UIButton *signinButton;
 
 @end

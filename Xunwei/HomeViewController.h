@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface HomeViewController : UIViewController <UITextFieldDelegate>
+@interface HomeViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) UIActivityIndicatorView *indicator;
 
-@property (strong, nonatomic) UIScrollView *scrollView;
+@property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSMutableArray *array; // all restaurants info
 @property (nonatomic, assign) id currentResponder;
 @property (strong, nonatomic) UIView *inputOverlay;

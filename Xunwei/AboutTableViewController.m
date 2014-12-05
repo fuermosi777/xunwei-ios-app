@@ -46,12 +46,12 @@
         }
         case CONTACTSECTION:
         {
-            rowHeight = 40;
+            rowHeight = 44;
             break;
         }
         case VERSIONSECTION:
         {
-            rowHeight = 40;
+            rowHeight = 44;
             break;
         }
             default:

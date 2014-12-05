@@ -24,11 +24,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    // load data
-    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
-    _array = [userInfo objectForKey:@"restaurants"];
+    [self loadData];
     
     [self showView];
+}
+
+- (void)loadData {
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    _array = [userInfo objectForKey:@"restaurants"];
 }
 
 - (void)showView {
@@ -57,7 +60,7 @@
 }
 
 - (void)addRightButton {
-    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"在附近搜索"
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"附近搜索"
                                                                     style:UIBarButtonItemStyleDone
                                                                    target:self
                                                                    action:@selector(searchNearby)];
@@ -115,7 +118,7 @@
 - (void)focusMe {
     MKCoordinateRegion region;
     region.center = _mapView.userLocation.coordinate;
-    region.span = MKCoordinateSpanMake(0.005, 0.005);
+    region.span = _mapView.region.span;
     
     region = [_mapView regionThatFits:region];
     [_mapView setRegion:region animated:YES];
@@ -179,8 +182,24 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     if ([view.annotation isKindOfClass:[MarkerAnnotation class]]) {
+        // remove callout
+        if (_callout){
+            [UIView animateWithDuration:0.1
+                             animations:^{
+                                 _callout.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 100);
+                             }];
+            // center annotation
+            MKCoordinateRegion region;
+            region.center = [(MarkerAnnotation *)view.annotation coordinate];
+            region.span = MKCoordinateSpanMake(0.01, 0.01);
+            [_mapView setRegion:region animated:YES];
+            
+        }
+        
+        
+        // add callout
         _callout = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100)];
-        [_callout setBackgroundColor:[UIColor colorWithRed:0.61 green:0.71 blue:0.02 alpha:0.9]];
+        [_callout setBackgroundColor:[UIColor colorWithRed:0.61 green:0.71 blue:0.02 alpha:0.8]];
         
         UIImageView *avatarView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 70, 70)];
         [avatarView sd_setImageWithURL:[(MarkerAnnotation *)view.annotation imageURL]];
@@ -208,7 +227,14 @@
         _callout.tag = [(MarkerAnnotation *)view.annotation tag];
         [_callout setUserInteractionEnabled:YES];
         
+        // animation add subview
         [self.view addSubview:_callout];
+        _callout.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 64);
+        [UIView animateWithDuration:0.1
+                         animations:^{
+                             _callout.frame = CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100);
+                         }];
+        
     }
 }
 
