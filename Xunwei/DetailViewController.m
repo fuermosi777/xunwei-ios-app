@@ -30,8 +30,9 @@
 #import "MarkerAnnotation.h"
 #import "SigninTableViewController.h"
 #import "ReviewTableViewController.h"
+#import "UMSocial.h"
 
-@interface DetailViewController () <CLLocationManagerDelegate>
+@interface DetailViewController () <CLLocationManagerDelegate, UMSocialUIDelegate>
 
 @end
 
@@ -49,6 +50,42 @@
 
 - (void)showView {
     [self addTable];
+    [self addRightButton];
+}
+
+- (void)addRightButton {
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"分享"
+                                                                    style:UIBarButtonItemStyleDone
+                                                                   target:self
+                                                                   action:@selector(share)];
+    self.navigationItem.rightBarButtonItem = rightButton;
+}
+
+- (void)share {
+    [UMSocialSnsService presentSnsIconSheetView:self
+                                         appKey:@"54812a4bfd98c5c974000ed6"
+                                      shareText:[NSString stringWithFormat:@"%@\n%@", [_dict objectForKey:@"name"], [_dict objectForKey:@"street1"]]
+                                     shareImage:_image
+                                shareToSnsNames:[NSArray arrayWithObjects:UMShareToWechatFavorite,UMShareToWechatSession,UMShareToWechatTimeline,nil]
+                                       delegate:self];
+    [UMSocialData defaultData].extConfig.wechatSessionData.url = [NSString stringWithFormat:@"http://xun-wei.com/app/webpage/restaurant/%@/",[_dict objectForKey:@"id"]];
+    [UMSocialData defaultData].extConfig.wechatTimelineData.url = [NSString stringWithFormat:@"http://xun-wei.com/app/webpage/restaurant/%@/",[_dict objectForKey:@"id"]];
+    [UMSocialData defaultData].extConfig.wechatSessionData.title = @"分享了一个餐馆";
+    [UMSocialData defaultData].extConfig.wechatTimelineData.title = @"分享了一个餐馆";
+}
+
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    //根据`responseCode`得到发送结果,如果分享成功
+    if(response.responseCode == UMSResponseCodeSuccess)
+    {
+        //得到分享到的微博平台名
+        NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
+    }
+}
+
+- (BOOL)isDirectShareInIconActionSheet {
+    return YES;
 }
 
 - (void)addTable {
@@ -278,7 +315,9 @@
                     
                     // start a new image download manager
                     NSURL *photo_URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@",[_dict objectForKey:@"photo"]]];
-                    [imageView sd_setImageWithURL:photo_URL];
+                    [imageView sd_setImageWithURL:photo_URL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        _image = image;
+                    }];
                     
                     [myCellView addSubview:imageView];
                     break;

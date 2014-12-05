@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "UMSocial.h"
+#import "UMSocialWechatHandler.h"
 
 @interface AppDelegate ()
 
@@ -31,6 +33,11 @@
      }
      */
     
+    // uMeng
+    [UMSocialData setAppKey:@"54812a4bfd98c5c974000ed6"];
+    //设置微信AppId、appSecret，分享url
+    [UMSocialWechatHandler setWXAppId:@"wxfa9bfde79a80438e" appSecret:@"7a8818070dd36ffb7d069521bf52c3e5" url:@"http://www.xun-wei.com/"];
+    
     return YES;
 }
 
@@ -54,6 +61,19 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+//友盟
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return  [UMSocialSnsService handleOpenURL:url];
+}
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return  [UMSocialSnsService handleOpenURL:url];
 }
 
 @end

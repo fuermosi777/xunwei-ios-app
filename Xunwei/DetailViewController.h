@@ -15,5 +15,6 @@
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) NSMutableArray *reviewArray;
 @property (strong, nonatomic) UITableView *tableView;
+@property (strong, nonatomic) UIImage *image; // restaurant image
 
 @end
