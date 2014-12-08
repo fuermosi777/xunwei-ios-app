@@ -18,6 +18,7 @@
 #import "SigninTableViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <NYXImagesKit/NYXImagesKit.h>
+#import "SelectorScrollView.h"
 
 @interface HomeViewController ()
 
@@ -34,6 +35,7 @@
     [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
     [self addRightButton];
     [self addMapSnapshot];
+    [self addSelector];
     [self addTable];
     
     if (!_indicator) {
@@ -41,6 +43,23 @@
     }
     
     [self addAvatar];
+    
+    // notification center
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(selectButtonTapped:)
+                                                 name:@"SelectButtonTappedNotification"
+                                               object:nil];
+}
+
+- (void)selectButtonTapped:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"SelectButtonTappedNotification"]){
+        UIButton *button = (UIButton *) notification.object;
+        if (![button.titleLabel.text isEqual:@"随便看看"]){
+        [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@", button.titleLabel.text]];
+        } else {
+            [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
+        }
+    }
 }
 
 - (void)resetAvatar {
@@ -113,8 +132,53 @@
     self.navigationItem.rightBarButtonItem = rightButton;
 }
 
+- (void)addSelector {
+    NSMutableArray *selectArray = [[NSMutableArray alloc] initWithObjects:@"随便看看", @"中餐", @"火锅", @"小吃", @"日料", @"韩餐", @"甜品", @"川菜", @"粤菜", nil];
+    
+    _navScrollView = [[SelectorScrollView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, 40)
+                                                                         array:selectArray];
+    
+    [self.view addSubview:_navScrollView];
+}
+
+# pragma mark - scroll event
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentOffset.y >= 0) { // to top
+        if (scrollView.contentOffset.y - _lastContentOffset > 10.0) { // scroll down
+            [self hideNav];
+        } else if (_lastContentOffset - scrollView.contentOffset.y > 10.0) {
+            [self unhideNav];
+        }
+    }
+    
+    _lastContentOffset = scrollView.contentOffset.y;
+}
+
+- (void)hideNav {
+    [UIView animateWithDuration:0.1
+                     animations:^{
+                         [_mapSnapshotView setFrame:CGRectMake(0, -100, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
+                         [_textField setFrame:CGRectMake(0, -100, _textField.frame.size.width, _textField.frame.size.height)];
+                         [_navScrollView setFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
+                         [_tableView setFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104)];
+                         
+                     }];
+}
+
+- (void)unhideNav {
+    [UIView animateWithDuration:0.1
+                     animations:^{
+                         [_mapSnapshotView setFrame:CGRectMake(0, 64, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
+                         [_textField setFrame:CGRectMake(30, 55 + 64, self.view.frame.size.width - 60, 30)];
+                         [_navScrollView setFrame:CGRectMake(0, 164, self.view.frame.size.width, 40)];
+                         [_tableView setFrame:CGRectMake(0, 204, self.view.frame.size.width, self.view.frame.size.height - 204)];
+                     }];
+}
+
+# pragma mark - add
+
 - (void)addTable {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, self.view.frame.size.height - 164)];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 204, self.view.frame.size.width, self.view.frame.size.height - 204)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.showsVerticalScrollIndicator = NO;
@@ -189,44 +253,23 @@
     [_mapSnapshotView setUserInteractionEnabled:YES];
     
     // add search box
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 55 + 64, self.view.frame.size.width - 60, 30)];
-    textField.backgroundColor = [UIColor whiteColor];
-    textField.textColor = [UIColor grayColor];
-    textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-    textField.layer.cornerRadius = 4.0f;
-    textField.delegate = self;
-    textField.textAlignment = NSTextAlignmentCenter;
-    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"开始寻味"
+    _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 55 + 64, self.view.frame.size.width - 60, 30)];
+    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.textColor = [UIColor grayColor];
+    _textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+    _textField.layer.cornerRadius = 4.0f;
+    _textField.delegate = self;
+    _textField.textAlignment = NSTextAlignmentCenter;
+    _textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"开始寻味"
                                                                       attributes:@{
                                                                                    NSForegroundColorAttributeName: [UIColor lightGrayColor],
                                                                                    NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
                                                                                    }
                                        ];
-    [self.view addSubview:textField];
+    [self.view addSubview:_textField];
 }
 
 - (void)snapshotMapView:(UIImageView *)imageView {
-    /*
-    // coor
-    CLLocationCoordinate2D startCoord;
-    startCoord.latitude = 40.714650000000f;
-    startCoord.longitude = -73.997755000000;
-    
-    MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
-    options.region = MKCoordinateRegionMakeWithDistance(startCoord, 200, 200);
-    options.mapType = MKMapTypeStandard;
-    options.showsBuildings = NO;
-    options.showsPointsOfInterest = NO;
-    options.size = CGSizeMake(self.view.frame.size.width, 100);
-    
-    MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
-    [snapshotter startWithQueue:dispatch_get_main_queue() completionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
-        if( error ) {
-        } else {
-            [imageView setImage:snapshot.image];
-        }
-    }];
-     */
     float latitude, longitude;
     if ([_array count] > 0) {
         NSDictionary *dict = [_array objectAtIndex:0];

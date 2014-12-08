@@ -20,6 +20,8 @@
 		3FB4106A1A31658A00CF1963 /* UMSocialSDKResourcesNew.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3FB4105E1A31658A00CF1963 /* UMSocialSDKResourcesNew.bundle */; };
 		3FB410721A31684F00CF1963 /* libSocialWechat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FB4106D1A31684F00CF1963 /* libSocialWechat.a */; };
 		3FB410731A31684F00CF1963 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FB4106E1A31684F00CF1963 /* libWeChatSDK.a */; };
+		3FCDD1D51A34EA9300315137 /* SelectorScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FCDD1D41A34EA9300315137 /* SelectorScrollView.m */; };
+		3FCDD1D81A34F17B00315137 /* PointerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FCDD1D71A34F17B00315137 /* PointerView.m */; };
 		3FEFE8791A2650BD00ACFBF4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8781A2650BD00ACFBF4 /* main.m */; };
 		3FEFE87C1A2650BD00ACFBF4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE87B1A2650BD00ACFBF4 /* AppDelegate.m */; };
 		3FEFE8821A2650BD00ACFBF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3FEFE8801A2650BD00ACFBF4 /* Main.storyboard */; };
@@ -85,6 +87,10 @@
 		3FB4106F1A31684F00CF1963 /* UMSocialWechatHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialWechatHandler.h; sourceTree = "<group>"; };
 		3FB410701A31684F00CF1963 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		3FB410711A31684F00CF1963 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
+		3FCDD1D31A34EA9300315137 /* SelectorScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectorScrollView.h; sourceTree = "<group>"; };
+		3FCDD1D41A34EA9300315137 /* SelectorScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectorScrollView.m; sourceTree = "<group>"; };
+		3FCDD1D61A34F17B00315137 /* PointerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointerView.h; sourceTree = "<group>"; };
+		3FCDD1D71A34F17B00315137 /* PointerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointerView.m; sourceTree = "<group>"; };
 		3FEFE8731A2650BD00ACFBF4 /* Xunwei.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xunwei.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FEFE8771A2650BD00ACFBF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3FEFE8781A2650BD00ACFBF4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -220,6 +226,42 @@
 			path = Wechat;
 			sourceTree = "<group>";
 		};
+		3FCDD1D91A34F19100315137 /* Vertical selector */ = {
+			isa = PBXGroup;
+			children = (
+				3FCDD1D31A34EA9300315137 /* SelectorScrollView.h */,
+				3FCDD1D41A34EA9300315137 /* SelectorScrollView.m */,
+				3FCDD1D61A34F17B00315137 /* PointerView.h */,
+				3FCDD1D71A34F17B00315137 /* PointerView.m */,
+			);
+			name = "Vertical selector";
+			sourceTree = "<group>";
+		};
+		3FCDD1DA1A34F1E300315137 /* View controller */ = {
+			isa = PBXGroup;
+			children = (
+				3FEFE8A61A2653D800ACFBF4 /* HomeViewController.h */,
+				3FEFE8A71A2653D800ACFBF4 /* HomeViewController.m */,
+				3FEFE89E1A2653D800ACFBF4 /* AboutTableViewController.h */,
+				3FEFE89F1A2653D800ACFBF4 /* AboutTableViewController.m */,
+				3FEFE8B41A2653D800ACFBF4 /* ReviewTableViewController.h */,
+				3FEFE8B51A2653D800ACFBF4 /* ReviewTableViewController.m */,
+				3FEFE8AC1A2653D800ACFBF4 /* MapViewController.h */,
+				3FEFE8AD1A2653D800ACFBF4 /* MapViewController.m */,
+				3FEFE8B61A2653D800ACFBF4 /* SigninTableViewController.h */,
+				3FEFE8B71A2653D800ACFBF4 /* SigninTableViewController.m */,
+				3FEFE8B81A2653D800ACFBF4 /* SingupTableViewController.h */,
+				3FEFE8B91A2653D800ACFBF4 /* SingupTableViewController.m */,
+				3FEFE8BA1A2653D800ACFBF4 /* UserTableViewController.h */,
+				3FEFE8BB1A2653D800ACFBF4 /* UserTableViewController.m */,
+				3FEFE8A21A2653D800ACFBF4 /* DetailViewController.h */,
+				3FEFE8A31A2653D800ACFBF4 /* DetailViewController.m */,
+				3FEFE8B01A2653D800ACFBF4 /* NavigationViewController.h */,
+				3FEFE8B11A2653D800ACFBF4 /* NavigationViewController.m */,
+			);
+			name = "View controller";
+			sourceTree = "<group>";
+		};
 		3FEFE86A1A2650BC00ACFBF4 = {
 			isa = PBXGroup;
 			children = (
@@ -246,32 +288,16 @@
 				3FB410451A31658A00CF1963 /* UMSocial_Sdk_4.2.1 */,
 				3FEFE87A1A2650BD00ACFBF4 /* AppDelegate.h */,
 				3FEFE87B1A2650BD00ACFBF4 /* AppDelegate.m */,
-				3FEFE8A61A2653D800ACFBF4 /* HomeViewController.h */,
-				3FEFE8A71A2653D800ACFBF4 /* HomeViewController.m */,
-				3FEFE89E1A2653D800ACFBF4 /* AboutTableViewController.h */,
-				3FEFE89F1A2653D800ACFBF4 /* AboutTableViewController.m */,
+				3FCDD1DA1A34F1E300315137 /* View controller */,
 				3FEFE8A01A2653D800ACFBF4 /* AlertView.h */,
 				3FEFE8A11A2653D800ACFBF4 /* AlertView.m */,
-				3FEFE8A21A2653D800ACFBF4 /* DetailViewController.h */,
-				3FEFE8A31A2653D800ACFBF4 /* DetailViewController.m */,
 				3FEFE8AA1A2653D800ACFBF4 /* ListItemView.h */,
 				3FEFE8AB1A2653D800ACFBF4 /* ListItemView.m */,
-				3FEFE8AC1A2653D800ACFBF4 /* MapViewController.h */,
-				3FEFE8AD1A2653D800ACFBF4 /* MapViewController.m */,
 				3FEFE8AE1A2653D800ACFBF4 /* MarkerAnnotation.h */,
 				3FEFE8AF1A2653D800ACFBF4 /* MarkerAnnotation.m */,
-				3FEFE8B01A2653D800ACFBF4 /* NavigationViewController.h */,
-				3FEFE8B11A2653D800ACFBF4 /* NavigationViewController.m */,
+				3FCDD1D91A34F19100315137 /* Vertical selector */,
 				3FEFE8B21A2653D800ACFBF4 /* PanelViewOnMap.h */,
 				3FEFE8B31A2653D800ACFBF4 /* PanelViewOnMap.m */,
-				3FEFE8B41A2653D800ACFBF4 /* ReviewTableViewController.h */,
-				3FEFE8B51A2653D800ACFBF4 /* ReviewTableViewController.m */,
-				3FEFE8B61A2653D800ACFBF4 /* SigninTableViewController.h */,
-				3FEFE8B71A2653D800ACFBF4 /* SigninTableViewController.m */,
-				3FEFE8B81A2653D800ACFBF4 /* SingupTableViewController.h */,
-				3FEFE8B91A2653D800ACFBF4 /* SingupTableViewController.m */,
-				3FEFE8BA1A2653D800ACFBF4 /* UserTableViewController.h */,
-				3FEFE8BB1A2653D800ACFBF4 /* UserTableViewController.m */,
 				3FEFE8801A2650BD00ACFBF4 /* Main.storyboard */,
 				3FEFE8831A2650BD00ACFBF4 /* Images.xcassets */,
 				3FEFE8A41A2653D800ACFBF4 /* GetRestaurants.h */,
@@ -492,6 +518,8 @@
 				3FEFE8C31A2653D800ACFBF4 /* MapViewController.m in Sources */,
 				3FEFE8C01A2653D800ACFBF4 /* HomeViewController.m in Sources */,
 				3FEFE8791A2650BD00ACFBF4 /* main.m in Sources */,
+				3FCDD1D51A34EA9300315137 /* SelectorScrollView.m in Sources */,
+				3FCDD1D81A34F17B00315137 /* PointerView.m in Sources */,
 				3FEFE8CA1A2653D800ACFBF4 /* UserTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -624,6 +652,7 @@
 			baseConfigurationReference = 4D058735866C97C43EAAB913 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = Xunwei/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -642,6 +671,7 @@
 			baseConfigurationReference = BB87E38CF3CD153433BE822D /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = Xunwei/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -1,11 +1,4 @@
-//
-//  JSFaveStarControl.m
-//  FavStarControl
-//
-//  Created by James "Jasarien" Addyman on 17/02/2010.
-//  Copyright 2010 JamSoft. All rights reserved.
-//  http://jamsoftonline.com
-//
+
 
 #import "JSFavStarControl.h"
 

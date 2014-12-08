@@ -166,15 +166,18 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    MKAnnotationView *annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Marker"];
+    MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Marker"];
+    
     if ([annotation isKindOfClass:[MarkerAnnotation class]]) {
+
+        annotationView.image = [UIImage imageNamed:@"mapannotation"];
         
-        MKPinAnnotationView *pinAnnotation = (MKPinAnnotationView *)annotationView;
-        pinAnnotation.animatesDrop = YES;
+        //annotationView.animatesDrop = YES;
         
         annotationView.canShowCallout = NO;
         
     } else {
+        annotationView.canShowCallout = NO;
         annotationView = nil;
     }
     return annotationView;
@@ -191,7 +194,7 @@
             // center annotation
             MKCoordinateRegion region;
             region.center = [(MarkerAnnotation *)view.annotation coordinate];
-            region.span = MKCoordinateSpanMake(0.01, 0.01);
+            region.span = _mapView.region.span;
             [_mapView setRegion:region animated:YES];
             
         }
