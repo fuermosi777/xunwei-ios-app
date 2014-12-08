@@ -13,4 +13,9 @@
     NSMutableData *incomingData;
 }
 @property (strong, nonatomic) NSDictionary *dict;
+@property (strong, nonatomic) NSArray *reviewArray;
+@property (strong, nonatomic) NSString *username;
+
+- (id)initWithUsername:(NSString *)username;
+
 @end

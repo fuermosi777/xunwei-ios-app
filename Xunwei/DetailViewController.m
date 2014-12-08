@@ -31,6 +31,7 @@
 #import "SigninTableViewController.h"
 #import "ReviewTableViewController.h"
 #import "UMSocial.h"
+#import "UserTableViewController.h"
 
 @interface DetailViewController () <CLLocationManagerDelegate, UMSocialUIDelegate>
 
@@ -543,6 +544,15 @@
 }
 
 #pragma mark - action
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == REVIEWSECTION) {
+        NSDictionary *dict = [_reviewArray objectAtIndex:indexPath.row];
+        NSString *username = [dict objectForKey:@"username"];
+        UserTableViewController *userVC = [[UserTableViewController alloc] initWithUsername:username];
+        [self.navigationController pushViewController:userVC animated:YES];
+    }
+}
 
 - (void)chooseUserOrSignin {
     if (self.checkLoginStatus) {

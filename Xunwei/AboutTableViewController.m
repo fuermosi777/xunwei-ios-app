@@ -142,9 +142,11 @@
             switch (indexPath.row) {
                 case 0:
                 {
+                    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+                    
                     UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
                     button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-                    [button setTitle:@"1.1.0" forState:UIControlStateNormal];
+                    [button setTitle:version forState:UIControlStateNormal];
                     [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
                     
                     [cell addSubview:button];

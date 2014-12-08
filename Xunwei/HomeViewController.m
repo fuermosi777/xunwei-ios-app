@@ -111,7 +111,10 @@
 }
 
 - (void)redirectToUserView {
-    UserTableViewController *userVC = [[UserTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    NSString *username = [userInfo objectForKey:@"username"];
+    
+    UserTableViewController *userVC = [[UserTableViewController alloc] initWithUsername:username];
     [self.navigationController pushViewController:userVC animated:YES];
 }
 
@@ -143,12 +146,10 @@
 
 # pragma mark - scroll event
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.y >= 0) { // to top
-        if (scrollView.contentOffset.y - _lastContentOffset > 10.0) { // scroll down
-            [self hideNav];
-        } else if (_lastContentOffset - scrollView.contentOffset.y > 10.0) {
-            [self unhideNav];
-        }
+    if (scrollView.contentOffset.y - _lastContentOffset > 10.0) { // scroll down
+        [self hideNav];
+    } else if (_lastContentOffset - scrollView.contentOffset.y > 10.0) {
+        [self unhideNav];
     }
     
     _lastContentOffset = scrollView.contentOffset.y;
