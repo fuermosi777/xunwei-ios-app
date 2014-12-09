@@ -12,9 +12,13 @@
 @interface DetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
 
 @property (strong, nonatomic) NSMutableDictionary *dict;
+@property NSInteger ID;
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) NSMutableArray *reviewArray;
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) UIImage *image; // restaurant image
+
+
+- (id)initWithID:(NSInteger) ID;
 
 @end

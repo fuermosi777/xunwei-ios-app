@@ -39,6 +39,18 @@
 
 @implementation DetailViewController
 
+- (id)initWithID:(NSInteger) ID {
+    self = [super init];
+    if (self) {
+        _ID = ID;
+    }
+    return self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self loadData];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -47,6 +59,32 @@
     
     // Do any additional setup after loading the view.
     [self showView];
+}
+
+- (void)loadData {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // send url request
+        NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?restaurant_id=%li",_ID]];
+        NSError *error;
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
+        if (data != nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSError *error;
+                NSMutableArray *array = [NSJSONSerialization JSONObjectWithData:data
+                                                                        options:kNilOptions
+                                                                          error:&error];
+                // load data
+                _dict = [array objectAtIndex:0];
+                _reviewArray = [_dict objectForKey:@"review"];
+                
+                [_tableView reloadData];
+                
+            });
+        } else {
+            NSLog(@"error!");
+        }
+        
+    });
 }
 
 - (void)showView {
@@ -90,8 +128,6 @@
 }
 
 - (void)addTable {
-    // load
-    _reviewArray = [_dict objectForKey:@"review"];
     
     //self.automaticallyAdjustsScrollViewInsets = NO;
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -40, self.view.frame.size.width, self.view.frame.size.height + 40)

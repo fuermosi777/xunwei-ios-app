@@ -31,7 +31,7 @@
     return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [self loadData];
 }
 
@@ -52,70 +52,55 @@
 
 #pragma mark - load data
 - (void)loadData {
-    // 1 start a post data
-    NSString *post = [NSString stringWithFormat:@"username=%@",_username];
-    NSLog(@"%@",post);
-    
-    NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding
-                          allowLossyConversion:YES];
-    // 2 get data length
-    NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[postData length]];
-    // 3 create url request
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    NSURL *url = [NSURL URLWithString:@"http://xun-wei.com/app/user/"];
-    [request setURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:postData];
-    // 4 create connection
-    __unused NSURLConnection *conn = [[NSURLConnection alloc]initWithRequest:request
-                                                                    delegate:self
-                                                            startImmediately:YES];
-}
-
-// data receive part
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    incomingData = nil;
-    if (!incomingData) {
-        incomingData = [[NSMutableData alloc] init];
-    }
-    
-    [incomingData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    
-    AlertView *alert = [[AlertView alloc] init];
-    [alert showCustomErrorWithTitle:@"错误" message:@"网络连接错误" cancelButton:@"确定"];
-}
-
-// 数据全部接受完毕
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    
-    NSError *error = nil;
-    
-    NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:incomingData
-                                                                options:kNilOptions
-                                                                  error:&error];
-    NSInteger status = [[dict objectForKey:@"status"] integerValue];
-    NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
-    NSDictionary *info = [dict objectForKey:@"info"];
-
-    if (status == 1) { // login success
-        _dict = info;
-        _reviewArray = [_dict objectForKey:@"reviews"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // 1 start a post data
+        NSString *post = [NSString stringWithFormat:@"username=%@",_username];
         
-        [self.tableView reloadData];
+        NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding
+                              allowLossyConversion:YES];
+        // 2 get data length
+        NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[postData length]];
+        // 3 create url request
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        NSURL *url = [NSURL URLWithString:@"http://xun-wei.com/app/user/"];
+        [request setURL:url];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
         
-    } else { // unexplained error
+        NSError *requestError;
+        NSURLResponse *urlResponse = nil;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
         
-        AlertView *alert = [[AlertView alloc] init];
-        [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
+        if (data != nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSError *error;
+                NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
+                                                                            options:kNilOptions
+                                                                              error:&error];
+                NSInteger status = [[dict objectForKey:@"status"] integerValue];
+                NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
+                NSDictionary *info = [dict objectForKey:@"info"];
+                
+                if (status == 1) { // login success
+                    _dict = info;
+                    _reviewArray = [_dict objectForKey:@"reviews"];
+                    
+                    [self.tableView reloadData];
+                    
+                } else { // unexplained error
+                    
+                    AlertView *alert = [[AlertView alloc] init];
+                    [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
+                    
+                }
+            });
+        } else {
+            NSLog(@"error!");
+        }
         
-    }
+    });
 }
 
 #pragma mark - Table view data source

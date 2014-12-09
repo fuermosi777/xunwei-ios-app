@@ -343,20 +343,11 @@
 }
 
 - (void)redirectToDetailView:(UITapGestureRecognizer *)tap {
-    DetailViewController *vc = [[DetailViewController alloc] init];
+    NSInteger ID = tap.view.tag;
     
-    for (int i = 0; i < [_array count]; i++) {
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-        dict = [_array objectAtIndex:i];
-        if ([[[_array objectAtIndex:i] objectForKey:@"id"] intValue] == tap.view.tag) {
-            [vc setDict:dict];
-            
-        }
-    }
+    DetailViewController *vc = [[DetailViewController alloc] initWithID:ID];
     
     [self.navigationController pushViewController:vc animated:YES];
-    
-    
 }
 
 - (void)loadData:(NSString *)text {

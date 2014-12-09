@@ -292,7 +292,9 @@
     NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
 
     if (status == 1) { // login success
-        [self.navigationController popToRootViewControllerAnimated:YES];
+        NSUInteger index = [self.navigationController.viewControllers indexOfObject:self];
+        
+        [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:index - 1] animated:YES];
         
     } else { // unexplained error
         AlertView *alert = [[AlertView alloc] init];
