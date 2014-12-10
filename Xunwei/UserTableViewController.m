@@ -16,6 +16,8 @@
 #import "UserTableViewController.h"
 #import "AlertView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "ImagePickerController.h"
+#import <AFNetworking.h>
 
 @interface UserTableViewController ()
 
@@ -330,6 +332,78 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+# pragma mark - actions
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == AVATARSECTION) {
+        if (self.checkSelf){
+            [self uploadPhoto];
+        }
+    }
+}
+
+- (void)uploadPhoto {
+    ImagePickerController *picker = [[ImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentViewController:picker animated:YES completion:^{}];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+
+    [picker dismissViewControllerAnimated:YES completion:^{}];
+    
+    UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.5);
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    NSString *username = [userInfo objectForKey:@"username"];
+    NSString *password = [userInfo objectForKey:@"password"];
+    NSDictionary *param = @{@"username":username,
+                            @"password":password};
+    
+    [manager POST:@"http://xun-wei.com/app/userprofile/"
+       parameters:param constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+            [formData appendPartWithFileData:imageData
+                                       name:@"avatar"
+                                   fileName:@"avatar.jpg"
+                                   mimeType:@"image/jpeg"];
+       }
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"Success: %@", responseObject);
+              NSDictionary *dict = responseObject;
+
+              NSInteger status = [[dict objectForKey:@"status"] integerValue];
+              NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
+              NSDictionary *userInfoDict = [dict objectForKey:@"info"];
+              
+              if (status == 1) {
+                  // reset user avatar
+                  NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+                  [userInfo setValue:userInfoDict forKey:@"userinfo"];
+                  [userInfo synchronize];
+                  
+                  [self loadData];
+              } else {
+                  AlertView *alert = [[AlertView alloc] init];
+                  [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"Error: %@", error);
+          }];
+}
+
+// check if the user is myself
+- (BOOL)checkSelf {
+    NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+    NSString *username = [userInfo objectForKey:@"username"];
+    if (username == _username) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
 
 /*
 // Override to support conditional editing of the table view.

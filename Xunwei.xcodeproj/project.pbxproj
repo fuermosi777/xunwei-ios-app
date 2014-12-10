@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F2F678A1A37DF67003F9D21 /* ImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F2F67891A37DF67003F9D21 /* ImagePickerController.m */; };
 		3FB410601A31658A00CF1963 /* UMSocialLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FB410461A31658A00CF1963 /* UMSocialLocalizable.strings */; };
 		3FB410611A31658A00CF1963 /* libUMSocial_Sdk_4.2.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FB410541A31658A00CF1963 /* libUMSocial_Sdk_4.2.1.a */; };
 		3FB410621A31658A00CF1963 /* UMSCommentDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3FB410561A31658A00CF1963 /* UMSCommentDetailController.xib */; };
@@ -58,6 +59,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3F2F67881A37DF67003F9D21 /* ImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePickerController.h; sourceTree = "<group>"; };
+		3F2F67891A37DF67003F9D21 /* ImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePickerController.m; sourceTree = "<group>"; };
 		3F8BE7E81A31627A009204AB /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3FB410471A31658A00CF1963 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UMSocialLocalizable.strings; sourceTree = "<group>"; };
 		3FB410491A31658A00CF1963 /* UMSocial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocial.h; sourceTree = "<group>"; };
@@ -256,6 +259,8 @@
 				3FEFE8BB1A2653D800ACFBF4 /* UserTableViewController.m */,
 				3FEFE8A21A2653D800ACFBF4 /* DetailViewController.h */,
 				3FEFE8A31A2653D800ACFBF4 /* DetailViewController.m */,
+				3F2F67881A37DF67003F9D21 /* ImagePickerController.h */,
+				3F2F67891A37DF67003F9D21 /* ImagePickerController.m */,
 				3FEFE8B01A2653D800ACFBF4 /* NavigationViewController.h */,
 				3FEFE8B11A2653D800ACFBF4 /* NavigationViewController.m */,
 			);
@@ -509,6 +514,7 @@
 				3FEFE8C11A2653D800ACFBF4 /* JSFavStarControl.m in Sources */,
 				3FEFE87C1A2650BD00ACFBF4 /* AppDelegate.m in Sources */,
 				3FEFE8BD1A2653D800ACFBF4 /* AlertView.m in Sources */,
+				3F2F678A1A37DF67003F9D21 /* ImagePickerController.m in Sources */,
 				3FEFE8C21A2653D800ACFBF4 /* ListItemView.m in Sources */,
 				3FEFE8C41A2653D800ACFBF4 /* MarkerAnnotation.m in Sources */,
 				3FEFE8C61A2653D800ACFBF4 /* PanelViewOnMap.m in Sources */,

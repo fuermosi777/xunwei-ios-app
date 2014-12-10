@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UserTableViewController : UITableViewController
+@interface UserTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (strong, nonatomic) NSDictionary *dict;
 @property (strong, nonatomic) NSArray *reviewArray;
 @property (strong, nonatomic) NSString *username;
