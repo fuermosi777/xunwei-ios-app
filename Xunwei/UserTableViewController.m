@@ -377,7 +377,7 @@
               NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
               NSDictionary *userInfoDict = [dict objectForKey:@"info"];
               
-              if (status == 1) {
+              if (status == 1) { 
                   // reset user avatar
                   NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
                   [userInfo setValue:userInfoDict forKey:@"userinfo"];
