@@ -6,7 +6,11 @@
 //  Copyright (c) 2014 Hao Liu. All rights reserved.
 //
 
+#define NAVIGATIONHEIGHT 64
 #define LISTITEMHEIGHT 80
+#define MAPHEIGHT 100
+#define NAVBARHEIGHT 40
+#define ADHEIGHT 80
 
 #import "HomeViewController.h"
 #import "GetRestaurants.h"
@@ -35,7 +39,8 @@
     [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
     [self addRightButton];
     [self addMapSnapshot];
-    [self addSelector];
+    [self addNavbar];
+    [self addAd];
     [self addTable];
     
     if (!_indicator) {
@@ -135,20 +140,11 @@
     self.navigationItem.rightBarButtonItem = rightButton;
 }
 
-- (void)addSelector {
-    NSMutableArray *selectArray = [[NSMutableArray alloc] initWithObjects:@"随便看看", @"中餐", @"火锅", @"小吃", @"日料", @"韩餐", @"甜品", @"川菜", @"粤菜", nil];
-    
-    _navScrollView = [[SelectorScrollView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, 40)
-                                                                         array:selectArray];
-    
-    [self.view addSubview:_navScrollView];
-}
-
 # pragma mark - scroll event
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y - _lastContentOffset > 10.0) { // scroll down
         [self hideNav];
-    } else if (_lastContentOffset - scrollView.contentOffset.y > 10.0) {
+    } else if (_lastContentOffset - scrollView.contentOffset.y > 5.0 && scrollView.contentOffset.y <= 0) {
         [self unhideNav];
     }
     
@@ -156,30 +152,105 @@
 }
 
 - (void)hideNav {
-    [UIView animateWithDuration:0.1
+    [UIView animateWithDuration:0.2
                      animations:^{
                          [_mapSnapshotView setFrame:CGRectMake(0, -100, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
                          [_textField setFrame:CGRectMake(0, -100, _textField.frame.size.width, _textField.frame.size.height)];
                          [_navScrollView setFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
-                         [_tableView setFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104)];
+                         [_tableView setFrame:CGRectMake(0, NAVBARHEIGHT + NAVIGATIONHEIGHT, self.view.frame.size.width, self.view.frame.size.height - NAVIGATIONHEIGHT - NAVBARHEIGHT)];
+                         [_adScrollView setFrame:CGRectMake(0, -100, _adScrollView.frame.size.width, ADHEIGHT)];
                          
                      }];
 }
 
 - (void)unhideNav {
-    [UIView animateWithDuration:0.1
+    [UIView animateWithDuration:0.2
                      animations:^{
-                         [_mapSnapshotView setFrame:CGRectMake(0, 64, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
-                         [_textField setFrame:CGRectMake(30, 55 + 64, self.view.frame.size.width - 60, 30)];
-                         [_navScrollView setFrame:CGRectMake(0, 164, self.view.frame.size.width, 40)];
-                         [_tableView setFrame:CGRectMake(0, 204, self.view.frame.size.width, self.view.frame.size.height - 204)];
+                         [_mapSnapshotView setFrame:CGRectMake(0, NAVIGATIONHEIGHT + ADHEIGHT, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
+                         [_textField setFrame:CGRectMake(30, 55 + NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width - 60, 30)];
+                         [_navScrollView setFrame:CGRectMake(0, MAPHEIGHT + NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width, NAVBARHEIGHT)];
+                         [_tableView setFrame:CGRectMake(0, ADHEIGHT + MAPHEIGHT + NAVBARHEIGHT + NAVIGATIONHEIGHT, self.view.frame.size.width, self.view.frame.size.height - ADHEIGHT - MAPHEIGHT - NAVBARHEIGHT - NAVIGATIONHEIGHT)];
+                         [_adScrollView setFrame:CGRectMake(0, NAVIGATIONHEIGHT, _adScrollView.frame.size.width, ADHEIGHT)];
                      }];
 }
 
 # pragma mark - add
 
+- (void)addMapSnapshot {
+    // create snap shot block and add it to the view
+    _mapSnapshotView = [[UIImageView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width, MAPHEIGHT)];
+    [self.view addSubview:_mapSnapshotView];
+    
+    // fill image into block
+    [self snapshotMapView:_mapSnapshotView];
+    
+    // add transparent overlay
+    UIView *overlay = [[UIView alloc] initWithFrame:_mapSnapshotView.bounds];
+    [overlay setBackgroundColor:[UIColor colorWithRed:0.99 green:0.65 blue:0.18 alpha:0.6]];
+    [_mapSnapshotView addSubview:overlay];
+    
+    // add address label
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.view.frame.size.width, 40)];
+    label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+    label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+    label.text = @"在地图上查看";
+    label.textAlignment = NSTextAlignmentCenter;
+    
+    [overlay addSubview:label];
+    
+    // add click event
+    UITapGestureRecognizer *awesomeViewSingleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                                 action:@selector(redirectToMapView)];
+    [_mapSnapshotView addGestureRecognizer:awesomeViewSingleFingerTap];
+    [_mapSnapshotView setUserInteractionEnabled:YES];
+    
+    // add search box
+    _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 55 + NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width - 60, 30)];
+    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.textColor = [UIColor grayColor];
+    _textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+    _textField.layer.cornerRadius = 4.0f;
+    _textField.delegate = self;
+    _textField.textAlignment = NSTextAlignmentCenter;
+    _textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"开始寻味"
+                                                                       attributes:@{
+                                                                                    NSForegroundColorAttributeName: [UIColor lightGrayColor],
+                                                                                    NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
+                                                                                    }
+                                        ];
+    [self.view addSubview:_textField];
+}
+
+- (void)addAd {
+    _adScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT, self.view.frame.size.width, ADHEIGHT)];
+    UIImageView *ad = [[UIImageView alloc] initWithFrame:_adScrollView.bounds];
+    [ad sd_setImageWithURL:[NSURL URLWithString:@"http://xun-wei.com/static/img/ad.jpg"]];
+    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openAd)];
+    [ad addGestureRecognizer:gesture];
+    [ad setUserInteractionEnabled:YES];
+    [ad setClipsToBounds:YES];
+    [ad setContentMode:UIViewContentModeScaleAspectFill];
+    
+    [_adScrollView addSubview:ad];
+    
+    [self.view addSubview:_adScrollView];
+}
+
+- (void)openAd {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://weibo.com/xunweinyc"]];
+}
+
+- (void)addNavbar {
+    NSMutableArray *selectArray = [[NSMutableArray alloc] initWithObjects:@"随便看看", @"中餐", @"火锅", @"小吃", @"日料", @"韩餐", @"甜品", @"川菜", @"粤菜", nil];
+    
+    _navScrollView = [[SelectorScrollView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT + MAPHEIGHT + ADHEIGHT, self.view.frame.size.width, NAVBARHEIGHT)
+                                                         array:selectArray];
+    
+    [self.view addSubview:_navScrollView];
+}
+
 - (void)addTable {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 204, self.view.frame.size.width, self.view.frame.size.height - 204)];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT + MAPHEIGHT + NAVBARHEIGHT + ADHEIGHT, self.view.frame.size.width, self.view.frame.size.height - NAVIGATIONHEIGHT - MAPHEIGHT - NAVBARHEIGHT - ADHEIGHT)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.showsVerticalScrollIndicator = NO;
@@ -225,50 +296,7 @@
 }
 
 
-- (void)addMapSnapshot {
-    // create snap shot block and add it to the view
-    _mapSnapshotView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 100)];
-    [self.view addSubview:_mapSnapshotView];
-    
-    // fill image into block
-    [self snapshotMapView:_mapSnapshotView];
-    
-    // add transparent overlay
-    UIView *overlay = [[UIView alloc] initWithFrame:_mapSnapshotView.bounds];
-    [overlay setBackgroundColor:[UIColor colorWithRed:0.99 green:0.65 blue:0.18 alpha:0.6]];
-    [_mapSnapshotView addSubview:overlay];
-    
-    // add address label
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.view.frame.size.width, 40)];
-    label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
-    label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-    label.text = @"在地图上查看";
-    label.textAlignment = NSTextAlignmentCenter;
-    
-    [overlay addSubview:label];
-    
-    // add click event
-    UITapGestureRecognizer *awesomeViewSingleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                                 action:@selector(redirectToMapView)];
-    [_mapSnapshotView addGestureRecognizer:awesomeViewSingleFingerTap];
-    [_mapSnapshotView setUserInteractionEnabled:YES];
-    
-    // add search box
-    _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 55 + 64, self.view.frame.size.width - 60, 30)];
-    _textField.backgroundColor = [UIColor whiteColor];
-    _textField.textColor = [UIColor grayColor];
-    _textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-    _textField.layer.cornerRadius = 4.0f;
-    _textField.delegate = self;
-    _textField.textAlignment = NSTextAlignmentCenter;
-    _textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"开始寻味"
-                                                                      attributes:@{
-                                                                                   NSForegroundColorAttributeName: [UIColor lightGrayColor],
-                                                                                   NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
-                                                                                   }
-                                       ];
-    [self.view addSubview:_textField];
-}
+
 
 - (void)snapshotMapView:(UIImageView *)imageView {
     float latitude, longitude;

@@ -64,7 +64,7 @@
 - (void)loadData {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // send url request
-        NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?restaurant_id=%li",_ID]];
+        NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?restaurant_id=%li",(long)_ID]];
         NSError *error;
         NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
         if (data != nil) {

@@ -24,6 +24,7 @@
 @property (strong, nonatomic) SelectorScrollView *navScrollView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
 @property (strong, nonatomic) UIImageView *mapSnapshotView;
+@property (strong, nonatomic) UIScrollView *adScrollView;
 
 @property (strong, nonatomic) NSString *searchText;
 @property (strong, nonatomic) UIImageView *avatar;
