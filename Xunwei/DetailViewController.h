@@ -17,7 +17,7 @@
 @property (strong, nonatomic) NSMutableArray *reviewArray;
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) UIImage *image; // restaurant image
-
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 - (id)initWithID:(NSInteger) ID;
 

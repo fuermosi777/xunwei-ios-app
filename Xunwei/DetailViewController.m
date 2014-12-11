@@ -548,6 +548,14 @@
             
             [myCellView addSubview:_mapView];
             
+            // location manager
+            _locationManager = [[CLLocationManager alloc] init];
+            _locationManager.delegate = self;
+            if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                [self.locationManager requestWhenInUseAuthorization];
+            }
+            [_locationManager startUpdatingLocation];
+            
             // set region and zoom
             CLLocationCoordinate2D startCoord;
             startCoord.latitude = [[_dict objectForKey:@"latitude"] doubleValue];

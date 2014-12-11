@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface MapViewController : UIViewController <MKMapViewDelegate>
+@interface MapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) NSMutableArray *array; // all restaurants info
 @property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) UIView *callout;
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 - (void)loadComplete;
 

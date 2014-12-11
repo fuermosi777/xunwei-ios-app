@@ -55,8 +55,14 @@
     _mapView.showsUserLocation = YES;
     _mapView.delegate = self;
     _mapView.showsPointsOfInterest = NO;
-    
     [self.view addSubview:_mapView];
+    
+    _locationManager = [[CLLocationManager alloc] init];
+    _locationManager.delegate = self;
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+    [_locationManager startUpdatingLocation];
 }
 
 - (void)addRightButton {
