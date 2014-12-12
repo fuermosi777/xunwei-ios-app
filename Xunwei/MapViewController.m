@@ -46,6 +46,8 @@
     // add button
     [self addFocusButton];
     
+    
+    
     // add navigationbar right button
     [self addRightButton];
 }
@@ -63,19 +65,14 @@
         [self.locationManager requestWhenInUseAuthorization];
     }
     [_locationManager startUpdatingLocation];
-}
-
-- (void)addRightButton {
-    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"附近搜索"
-                                                                    style:UIBarButtonItemStyleDone
-                                                                   target:self
-                                                                   action:@selector(searchNearby)];
-    self.navigationItem.rightBarButtonItem = rightButton;
+    
+    // add layer
+    [self addLayer];
 }
 
 - (void)searchNearby {
-    CLLocationCoordinate2D coord = _mapView.userLocation.coordinate;
-    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&lng=%f&lat=%f",coord.longitude,coord.latitude]];
+    CLLocationCoordinate2D coord = _mapView.region.center;
+    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&lng=%f&lat=%f&span=%f",coord.longitude,coord.latitude,_mapView.region.span.latitudeDelta]];
 }
 
 - (void)loadData:(NSString *)text {
@@ -100,6 +97,8 @@
     [self addMapAnnotations];
 }
 
+
+#pragma mark - add somthing
 - (void)addFocusButton {
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10, 74, 50, 50)];
     button.layer.cornerRadius = 20.0f;
@@ -109,6 +108,28 @@
     [button addTarget:self action:@selector(focusMe) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:button];
+}
+
+- (void)addLayer {
+    int radius = self.view.frame.size.width / 2.0 - 20.0;
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, self.mapView.bounds.size.width, self.mapView.bounds.size.height) cornerRadius:0];
+    UIBezierPath *circlePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(20, 64 + (self.view.frame.size.height - 64.0) / 2.0 - radius, 2.0*radius, 2.0*radius) cornerRadius:radius];
+    [path appendPath:circlePath];
+    [path setUsesEvenOddFillRule:YES];
+    
+    CAShapeLayer *fillLayer = [CAShapeLayer layer];
+    fillLayer.path = path.CGPath;
+    fillLayer.fillRule = kCAFillRuleEvenOdd;
+    fillLayer.fillColor = [UIColor colorWithRed:0.99 green:0.65 blue:0.25 alpha:0.4].CGColor;
+    [self.view.layer addSublayer:fillLayer];
+}
+
+- (void)addRightButton {
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"在当前区域搜索"
+                                                                    style:UIBarButtonItemStyleDone
+                                                                   target:self
+                                                                   action:@selector(searchNearby)];
+    self.navigationItem.rightBarButtonItem = rightButton;
 }
 
 - (void)centerMap {

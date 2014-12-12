@@ -23,6 +23,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <NYXImagesKit/NYXImagesKit.h>
 #import "SelectorScrollView.h"
+#import "AdScrollView.h"
 
 @interface HomeViewController ()
 
@@ -218,26 +219,18 @@
                                                                                     NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
                                                                                     }
                                         ];
+    // add search icon
+    UIImageView *searchIcon = [[UIImageView alloc] initWithFrame:CGRectMake(7, 7, 15, 15)];
+    [searchIcon setImage:[UIImage imageNamed:@"search"]];
+    [_textField addSubview:searchIcon];
+    
     [self.view addSubview:_textField];
 }
 
 - (void)addAd {
-    _adScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT, self.view.frame.size.width, ADHEIGHT)];
-    UIImageView *ad = [[UIImageView alloc] initWithFrame:_adScrollView.bounds];
-    [ad sd_setImageWithURL:[NSURL URLWithString:@"http://xun-wei.com/static/img/ad.jpg"]];
-    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openAd)];
-    [ad addGestureRecognizer:gesture];
-    [ad setUserInteractionEnabled:YES];
-    [ad setClipsToBounds:YES];
-    [ad setContentMode:UIViewContentModeScaleAspectFill];
-    
-    [_adScrollView addSubview:ad];
-    
+    _adScrollView = [[AdScrollView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT, self.view.frame.size.width, ADHEIGHT)];
+    [_adScrollView setParentVC:self];
     [self.view addSubview:_adScrollView];
-}
-
-- (void)openAd {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://weibo.com/xunweinyc"]];
 }
 
 - (void)addNavbar {
@@ -295,9 +288,6 @@
     return cell;
 }
 
-
-
-
 - (void)snapshotMapView:(UIImageView *)imageView {
     float latitude, longitude;
     if ([_array count] > 0) {
@@ -353,6 +343,7 @@
         [textField resignFirstResponder];
         
         [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@",_searchText]];
+        [textField setText:nil];// clear textfield after click search button
         return NO;
     } else {
         return YES;

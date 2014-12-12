@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface DetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
+@interface DetailViewController : UIViewController <MKMapViewDelegate, UITableViewDataSource,UITableViewDelegate>
 
 @property (strong, nonatomic) NSMutableDictionary *dict;
 @property NSInteger ID;

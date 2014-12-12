@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import "SelectorScrollView.h"
+#import "AdScrollView.h"
 
 @class SelectorScrollView;
+@class AdScrollView;
 
 @interface HomeViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -24,7 +26,7 @@
 @property (strong, nonatomic) SelectorScrollView *navScrollView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
 @property (strong, nonatomic) UIImageView *mapSnapshotView;
-@property (strong, nonatomic) UIScrollView *adScrollView;
+@property (strong, nonatomic) AdScrollView *adScrollView;
 
 @property (strong, nonatomic) NSString *searchText;
 @property (strong, nonatomic) UIImageView *avatar;

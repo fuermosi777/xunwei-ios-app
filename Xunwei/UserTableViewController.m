@@ -18,6 +18,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "ImagePickerController.h"
 #import <AFNetworking.h>
+#import "RestaurantListTableViewController.h"
+#import "AboutTableViewController.h"
 
 @interface UserTableViewController ()
 
@@ -39,12 +41,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -128,6 +124,16 @@
             }
             break;
         }
+        case INFOSECTION:
+        {
+            rowNum = 3;
+            break;
+        }
+        case ACTIONSECTION:
+        {
+            rowNum = 2;
+            break;
+        }
         default:
         {
             rowNum = 1;
@@ -143,7 +149,10 @@
     switch (section)
     {
         case REVIEWSECTION:
-            sectionName = @"评论过的...";
+            sectionName = @"评论过的餐厅";
+            break;
+        case INFOSECTION:
+            sectionName = @"基本信息";
             break;
         default:
             sectionName = @"";
@@ -196,126 +205,181 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:@"Cell"];
-    switch (indexPath.section) {
-        case AVATARSECTION:
-        {
-            UIImageView *avatar = [[UIImageView alloc] initWithFrame: CGRectMake((self.view.frame.size.width - AVATARWIDTH)/2, 20, AVATARWIDTH, AVATARWIDTH)];
-            [avatar sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [_dict objectForKey:@"avatar"]]]];
-            [avatar.layer setCornerRadius:26];
-            [avatar setClipsToBounds:YES];
-            
-            [cell addSubview:avatar];
-            
-            
-            NSString *username = [NSString stringWithFormat:@"%@", [_dict objectForKey:@"username"]];
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 40 + AVATARWIDTH, self.view.frame.size.width, 20)];
-            [label setText:username];
-            [label setTextAlignment:NSTextAlignmentCenter];
-            [label setFont:[UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14]];
-            
-            if (_dict) {
-                [cell addSubview:label];
-            }
-            
-            break;
-        }
-        case INFOSECTION: {
-            switch (indexPath.row) {
-                case 0:
-                {
-                    if (_dict){
-                        NSString *dateJoined = [NSString stringWithFormat:@"加入时间: %@", [_dict objectForKey:@"date_joined"]];
-                        cell.textLabel.text = dateJoined;
-                        cell.textLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-            break;
-        }
-        case ACTIONSECTION: {
-            switch (indexPath.row) {
-                case 0:
-                {
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
-                    [button setBackgroundColor:[UIColor clearColor]];
-                    [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
-                    [button setTitle:@"登出" forState:UIControlStateNormal];
-                    [button.titleLabel setFont:[UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14]];
-                    [button addTarget:self action:@selector(signout) forControlEvents:UIControlEventTouchUpInside];
-                    
-                    [cell addSubview:button];
-                    
-                    break;
-                }
-                default:
-                    break;
-            }
-            break;
-        }
-        case REVIEWSECTION:
-        {
-            if (_dict) {
-                NSMutableDictionary *reviewDict = [_reviewArray objectAtIndex:indexPath.row];
-                
-                // name
-                UILabel *name = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, 100, 20)];
-                name.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:12];
-                name.textColor = [UIColor colorWithRed:0.9 green:0.56 blue:0.12 alpha:1];
-                name.text = [reviewDict objectForKey:@"restaurant_name"];
-                
-                [cell addSubview:name];
-                
-                // date
-                UILabel *date = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 100 - 15, 10, 100, 20)];
-                
-                date.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:12];
-                date.textColor = [UIColor colorWithRed:0.71 green:0.71 blue:0.71 alpha:1];
-                date.text = [reviewDict objectForKey:@"review_date"];
-                date.textAlignment = NSTextAlignmentRight;
-                
-                [cell addSubview:date];
-                
-                // avatar
-                UIImageView *avatar = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
-                avatar.clipsToBounds = YES;
-                avatar.layer.cornerRadius = 10;
-                
-                // start a new image download manager
-                NSURL *photo_URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@",[reviewDict objectForKey:@"restaurant_photo"]]];
-                [avatar sd_setImageWithURL:photo_URL];
+    if (_dict) {
+        switch (indexPath.section) {
+            case AVATARSECTION:
+            {
+                UIImageView *avatar = [[UIImageView alloc] initWithFrame: CGRectMake((self.view.frame.size.width - AVATARWIDTH)/2, 20, AVATARWIDTH, AVATARWIDTH)];
+                [avatar sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [_dict objectForKey:@"avatar"]]]];
+                [avatar.layer setCornerRadius:26];
+                [avatar setClipsToBounds:YES];
                 
                 [cell addSubview:avatar];
                 
                 
-                // review
-                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15 + 40, 30, self.view.frame.size.width - 15 - 40 - 15 , cell.contentView.frame.size.height)];
-                label.textColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:1];
-                label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                NSString *username = [NSString stringWithFormat:@"%@", [_dict objectForKey:@"username"]];
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 40 + AVATARWIDTH, self.view.frame.size.width, 20)];
+                [label setText:username];
+                [label setTextAlignment:NSTextAlignmentCenter];
+                [label setFont:[UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14]];
                 
+                if (_dict) {
+                    [cell addSubview:label];
+                }
                 
-                NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-                style.minimumLineHeight = 20.f;
-                style.maximumLineHeight = 20.f;
-                NSDictionary *attributtes = @{NSParagraphStyleAttributeName : style,};
-                label.attributedText = [[NSAttributedString alloc] initWithString:[reviewDict objectForKey:@"review"]
-                                                                       attributes:attributtes];
-                
-                label.numberOfLines = 0;
-                label.lineBreakMode = NSLineBreakByWordWrapping;
-                [label sizeToFit];
-                
-                [cell addSubview:label];
-            } else {
-                cell.textLabel.text = @"暂无评论";
-                cell.textLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                break;
             }
-            break;
+            case INFOSECTION: {
+                switch (indexPath.row) {
+                    case 0:
+                    {
+                        if (_dict){
+                            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 13, 14, 14)];
+                            imageView.image = [UIImage imageNamed:@"clock14"];
+                            [cell addSubview: imageView];
+                            
+                            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, self.view.frame.size.width , 40)];
+                            label.textColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:1];
+                            label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                            label.text = [NSString stringWithFormat:@"加入时间: %@", [_dict objectForKey:@"date_joined"]];
+                            
+                            [cell addSubview:label];
+                        }
+                        break;
+                    }
+                    case 1:
+                    {
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 13, 14, 14)];
+                        imageView.image = [UIImage imageNamed:@"star14"];
+                        [cell addSubview: imageView];
+                        
+                        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, self.view.frame.size.width , 40)];
+                        label.textColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:1];
+                        label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                        label.text = [NSString stringWithFormat:@"收藏: %@", [_dict objectForKey:@"liked_num"]];
+                        
+                        [cell addSubview:label];
+                        
+                        // touch event
+                        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(redirectToRestaurantListView)];
+                        [cell addGestureRecognizer:tap];
+                        
+                        break;
+                    }
+                    case 2:
+                    {
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 13, 14, 14)];
+                        imageView.image = [UIImage imageNamed:@"review14"];
+                        [cell addSubview: imageView];
+                        
+                        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, self.view.frame.size.width , 40)];
+                        label.textColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:1];
+                        label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                        label.text = [NSString stringWithFormat:@"评论: %@", [_dict objectForKey:@"review_num"]];
+                        
+                        [cell addSubview:label];
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                break;
+            }
+            case ACTIONSECTION: {
+                switch (indexPath.row) {
+                    case 0:
+                    {
+                        UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                        [button setBackgroundColor:[UIColor clearColor]];
+                        [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
+                        [button setTitle:@"登出" forState:UIControlStateNormal];
+                        [button.titleLabel setFont:[UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14]];
+                        [button addTarget:self action:@selector(signout) forControlEvents:UIControlEventTouchUpInside];
+                        
+                        [cell addSubview:button];
+                        
+                        break;
+                    }
+                    case 1:
+                    {
+                        UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                        [button setBackgroundColor:[UIColor clearColor]];
+                        [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
+                        [button setTitle:@"关于" forState:UIControlStateNormal];
+                        [button.titleLabel setFont:[UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14]];
+                        [button addTarget:self action:@selector(redirectToAboutView) forControlEvents:UIControlEventTouchUpInside];
+                        
+                        [cell addSubview:button];
+                        
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                break;
+            }
+            case REVIEWSECTION:
+            {
+                if (_dict) {
+                    NSMutableDictionary *reviewDict = [_reviewArray objectAtIndex:indexPath.row];
+                    
+                    // name
+                    UILabel *name = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, 100, 20)];
+                    name.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:12];
+                    name.textColor = [UIColor colorWithRed:0.9 green:0.56 blue:0.12 alpha:1];
+                    name.text = [reviewDict objectForKey:@"restaurant_name"];
+                    
+                    [cell addSubview:name];
+                    
+                    // date
+                    UILabel *date = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 100 - 15, 10, 100, 20)];
+                    
+                    date.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:12];
+                    date.textColor = [UIColor colorWithRed:0.71 green:0.71 blue:0.71 alpha:1];
+                    date.text = [reviewDict objectForKey:@"review_date"];
+                    date.textAlignment = NSTextAlignmentRight;
+                    
+                    [cell addSubview:date];
+                    
+                    // avatar
+                    UIImageView *avatar = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
+                    avatar.clipsToBounds = YES;
+                    avatar.layer.cornerRadius = 10;
+                    
+                    // start a new image download manager
+                    NSURL *photo_URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@",[reviewDict objectForKey:@"restaurant_photo"]]];
+                    [avatar sd_setImageWithURL:photo_URL];
+                    
+                    [cell addSubview:avatar];
+                    
+                    
+                    // review
+                    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15 + 40, 30, self.view.frame.size.width - 15 - 40 - 15 , cell.contentView.frame.size.height)];
+                    label.textColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:1];
+                    label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                    
+                    
+                    NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
+                    style.minimumLineHeight = 20.f;
+                    style.maximumLineHeight = 20.f;
+                    NSDictionary *attributtes = @{NSParagraphStyleAttributeName : style,};
+                    label.attributedText = [[NSAttributedString alloc] initWithString:[reviewDict objectForKey:@"review"]
+                                                                           attributes:attributtes];
+                    
+                    label.numberOfLines = 0;
+                    label.lineBreakMode = NSLineBreakByWordWrapping;
+                    [label sizeToFit];
+                    
+                    [cell addSubview:label];
+                } else {
+                    cell.textLabel.text = @"暂无评论";
+                    cell.textLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+                }
+                break;
+            }
+            default:
+                break;
         }
-        default:
-            break;
     }
     // Configure the cell...
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -405,48 +469,18 @@
     }
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+#pragma mark - redirect
+- (void)redirectToRestaurantListView {
+    NSArray *array = [_dict objectForKey:@"liked"];
+    RestaurantListTableViewController *vc = [[RestaurantListTableViewController alloc] initWithArray:array];
+    [self.navigationController pushViewController:vc animated:YES];
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)redirectToAboutView {
+    AboutTableViewController *vc = [[AboutTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:vc animated:YES];
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

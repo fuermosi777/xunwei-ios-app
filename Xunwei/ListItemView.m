@@ -43,13 +43,21 @@
         [self addSubview:subTitle];
         
         // star
-        UILabel *starlabel = [[UILabel alloc] initWithFrame:CGRectMake(imageHeight + SPACE * 3.0, SPACE + title.bounds.size.height + subTitle.bounds.size.height, self.frame.size.width - imageHeight - SPACE * 3, 20)];
-        starlabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-        starlabel.textColor = [UIColor colorWithRed:0.61 green:0.71 blue:0.02 alpha:1];
-        starlabel.text = [NSString stringWithFormat:@"🔥 %@",[dict objectForKey:@"star"]];
-        [self addSubview:starlabel];
+        UILabel *subcategorylabel = [[UILabel alloc] initWithFrame:CGRectMake(imageHeight + SPACE * 3.0, SPACE + title.bounds.size.height + subTitle.bounds.size.height, self.frame.size.width - imageHeight - SPACE * 3, 20)];
+        subcategorylabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+        subcategorylabel.textColor = [UIColor colorWithRed:0.61 green:0.71 blue:0.02 alpha:1];
+        
+        NSString *subcategorys = [[[dict objectForKey:@"subcategory"] valueForKey:@"description"] componentsJoinedByString:@", "];
+        
+        subcategorylabel.text = subcategorys;
+        
+        [self addSubview:subcategorylabel];
     }
     return self;
+}
+
+- (void)addStar {
+    
 }
 /*
 // Only override drawRect: if you perform custom drawing.
