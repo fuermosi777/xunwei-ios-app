@@ -99,8 +99,8 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    UITextView *text = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, cell.contentView.frame.size.width - 30, 250)];
-                    NSString *about = @"寻味纽约提供纽约地区最新鲜，最真实，最准确的美食信息。让每一个驻足纽约的吃货们都能快速发现自己熟悉和喜爱的味道；\n\n我们相信，每个吃货都是一部独一无二的美食自传；每次美食分享，背后都有难忘的瞬间。和家人，朋友一起欢聚的美好时刻，温暖海外游子的浓浓乡愁，在寻味你都能找到。\n\n熙熙攘攘的纽约街头，美食，寻味，是我们共同的符号。";
+                    UITextView *text = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, self.view.frame.size.width - 30, 250)];
+                    NSString *about = @"寻味提供美国最新鲜，最真实，最准确的美食信息。让每一个驻足纽约的吃货们都能快速发现自己熟悉和喜爱的味道；\n\n我们相信，每个吃货都是一部独一无二的美食自传；每次美食分享，背后都有难忘的瞬间。和家人，朋友一起欢聚的美好时刻，温暖海外游子的浓浓乡愁，在寻味你都能找到。\n\n熙熙攘攘的纽约街头，美食，寻味，是我们共同的符号。";
                     text.attributedText = [[NSAttributedString alloc] initWithString:about
                                                                           attributes:@{
                                                                                        NSForegroundColorAttributeName: [UIColor lightGrayColor],
@@ -123,7 +123,7 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                     button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     [button setTitle:@"liuhao1990@gmail.com" forState:UIControlStateNormal];
                     [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
@@ -144,7 +144,7 @@
                 {
                     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
                     
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                     button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     [button setTitle:version forState:UIControlStateNormal];
                     [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];

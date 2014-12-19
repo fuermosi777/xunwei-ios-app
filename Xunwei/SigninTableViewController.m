@@ -150,7 +150,7 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    _signinButton = [[UIButton alloc] initWithFrame:cell.bounds];
+                    _signinButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                     _signinButton.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
                     _signinButton.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     [_signinButton setTitle:@"登录" forState:UIControlStateNormal];
@@ -163,7 +163,7 @@
                 }
                 case 1:
                 {
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                     button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     [button setTitle:@"加入寻味" forState:UIControlStateNormal];
                     [button setTitleColor:[UIColor colorWithRed:0.89 green:0.58 blue:0.16 alpha:1] forState:UIControlStateNormal];
@@ -183,7 +183,7 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                    UIButton *button = [[UIButton alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 44)];
                     button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     [button setTitle:@"关于寻味" forState:UIControlStateNormal];
                     [button setTitleColor:[UIColor colorWithRed:0.89 green:0.58 blue:0.16 alpha:1] forState:UIControlStateNormal];

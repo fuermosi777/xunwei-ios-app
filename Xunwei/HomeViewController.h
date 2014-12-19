@@ -14,7 +14,7 @@
 @class SelectorScrollView;
 @class AdScrollView;
 
-@interface HomeViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface HomeViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) UIActivityIndicatorView *indicator;
 
@@ -31,6 +31,8 @@
 @property (strong, nonatomic) NSString *searchText;
 @property (strong, nonatomic) UIImageView *avatar;
 @property (strong, nonatomic) UIImage *avatarImage;
+
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 - (void)loadData:(NSString *)text;
 - (void)loadComplete;

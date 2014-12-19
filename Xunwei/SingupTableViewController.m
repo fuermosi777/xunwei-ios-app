@@ -126,7 +126,7 @@
             switch (indexPath.row) {
                 case 0:
                 {
-                    _signupButton = [[UIButton alloc] initWithFrame:cell.bounds];
+                    _signupButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                     _signupButton.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
                     _signupButton.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
                     [_signupButton setTitle:@"注册新账户" forState:UIControlStateNormal];

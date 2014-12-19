@@ -37,7 +37,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
+    [self locateSelf];
     [self addRightButton];
     [self addMapSnapshot];
     [self addNavbar];
@@ -57,13 +57,37 @@
                                                object:nil];
 }
 
+#pragma mark - Location
+
+- (void)locateSelf {
+    _locationManager = [[CLLocationManager alloc] init];
+    _locationManager.delegate = self;
+    _locationManager.distanceFilter = kCLDistanceFilterNone;
+    _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+        [self.locationManager requestWhenInUseAuthorization];
+    
+    [_locationManager startUpdatingLocation];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    [self.locationManager stopUpdatingLocation];
+    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&lng=%f&lat=%f&span=%f",newLocation.coordinate.longitude,newLocation.coordinate.latitude,0.05]];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    NSLog(@"locationManager:%@ didFailWithError:%@", manager, error);
+}
+
+#pragma mark - action
+
 - (void)selectButtonTapped:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"SelectButtonTappedNotification"]){
         UIButton *button = (UIButton *) notification.object;
-        if (![button.titleLabel.text isEqual:@"随便看看"]){
-        [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@", button.titleLabel.text]];
+        if (![button.titleLabel.text isEqual:@"附近"]){
+            [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@", button.titleLabel.text]];
         } else {
-            [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
+            [_locationManager startUpdatingLocation];
         }
     }
 }
@@ -234,7 +258,7 @@
 }
 
 - (void)addNavbar {
-    NSMutableArray *selectArray = [[NSMutableArray alloc] initWithObjects:@"随便看看", @"中餐", @"火锅", @"小吃", @"日料", @"韩餐", @"甜品", @"川菜", @"粤菜", nil];
+    NSMutableArray *selectArray = [[NSMutableArray alloc] initWithObjects:@"附近", @"中餐", @"火锅", @"小吃", @"日料", @"韩餐", @"甜品", @"川菜", @"粤菜", nil];
     
     _navScrollView = [[SelectorScrollView alloc] initWithFrame:CGRectMake(0, NAVIGATIONHEIGHT + MAPHEIGHT + ADHEIGHT, self.view.frame.size.width, NAVBARHEIGHT)
                                                          array:selectArray];
@@ -307,9 +331,8 @@
 
 
 - (void)initActivityIndicator {
-    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:_indicator];
-    self.navigationItem.leftBarButtonItem = item;
+    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [self.view addSubview:_indicator];
     _indicator.hidesWhenStopped = YES;
 }
 
