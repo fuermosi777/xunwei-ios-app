@@ -10,7 +10,7 @@
 #import "JSFavStarControl.h"
 @class JSFavStarControl;
 
-@interface ReviewTableViewController : UITableViewController
+@interface ReviewTableViewController : UITableViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
     NSMutableData *incomingData;
 }
@@ -22,6 +22,8 @@
 @property NSInteger price;
 @property (strong, nonatomic) UILabel *starLabel;
 @property (strong, nonatomic) UILabel *priceLabel;
+
+@property (strong, nonatomic) NSMutableArray *photoArray;
 
 - (void)receiveRating:(NSInteger)rating;
 

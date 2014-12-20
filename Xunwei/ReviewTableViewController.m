@@ -1,14 +1,20 @@
 
 #define INPUTSECTION 0
-#define ACTIONSECTION 3
-#define STARSECTION 1
-#define PRICESECTION 2
+#define ACTIONSECTION 4
+#define STARSECTION 2
+#define PHOTOSECTION 1
+#define PRICESECTION 3
 
 #define REVIEWFIELD 0
 
 #import "ReviewTableViewController.h"
 #import "JSFavStarControl.h"
 #import "AlertView.h"
+#import "ReviewCameraViewController.h"
+#import "ReviewGalleryViewController.h"
+#import <AFNetworking.h>
+#import <NYXImagesKit/NYXImagesKit.h>
+#import <MBProgressHUD/MBProgressHUD.h> // progress indicator
 
 @interface ReviewTableViewController () <UITextViewDelegate>
 
@@ -39,6 +45,9 @@
         case INPUTSECTION:
             sectionName = @"评价";
             break;
+        case PHOTOSECTION:
+            sectionName = @"上传照片";
+            break;
         case ACTIONSECTION:
             break;
         case STARSECTION:
@@ -56,7 +65,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 4;
+    return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -69,12 +78,59 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:@"Cell"];
     switch (indexPath.section) {
+        case PHOTOSECTION:
+        {
+            switch (indexPath.row) {
+                case 0:
+                {
+                    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
+                    scrollView.showsHorizontalScrollIndicator = NO;
+                    [scrollView setContentSize:CGSizeMake(MAX(self.view.frame.size.width, [_photoArray count] * 95 + 95 * 2 + 15), 100)];
+                    
+                    for (int i = 0; i < [_photoArray count]; i++) {
+                        NSData *imageData = [_photoArray objectAtIndex:i];
+                        UIImage *photo = [UIImage imageWithData:imageData];
+                        UIImage *photo_scaled = [photo scaleToFillSize:CGSizeMake(160, 160)];
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(15 + 95 * i, 10, 80, 80)];
+                        imageView.image = photo_scaled;
+                        
+                        [scrollView addSubview:imageView];
+                    }
+                    
+                    UIButton *cameraButton = [[UIButton alloc] initWithFrame:CGRectMake(15 + 95 * [_photoArray count], 10, 80, 80)];
+                    [cameraButton setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.96 alpha:1]];
+                    [cameraButton.layer setBorderColor:[UIColor colorWithRed:0.85 green:0.85 blue:0.86 alpha:1].CGColor];
+                    [cameraButton.layer setBorderWidth:0.5f];
+                    [cameraButton addTarget:self action:@selector(redirectToCameraView) forControlEvents:UIControlEventTouchUpInside];
+                    UIImageView *cameraView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 25, 30, 30)];
+                    cameraView.image = [UIImage imageNamed:@"camera30"];
+                    [cameraButton addSubview:cameraView];
+                    [scrollView addSubview:cameraButton];
+                    
+                    UIButton *galleryButton = [[UIButton alloc] initWithFrame:CGRectMake(110 + 95 * [_photoArray count], 10, 80, 80)];
+                    [galleryButton setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.96 alpha:1]];
+                    [galleryButton.layer setBorderColor:[UIColor colorWithRed:0.85 green:0.85 blue:0.86 alpha:1].CGColor];
+                    [galleryButton.layer setBorderWidth:0.5f];
+                    [galleryButton addTarget:self action:@selector(redirectToGalleryView) forControlEvents:UIControlEventTouchUpInside];
+                    UIImageView *galleryView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 25, 30, 30)];
+                    galleryView.image = [UIImage imageNamed:@"gallery30"];
+                    [galleryButton addSubview:galleryView];
+                    [scrollView addSubview:galleryButton];
+                    
+                    [cell addSubview:scrollView];
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
         case INPUTSECTION:
         {
             switch (indexPath.row) {
                 case 0:
                 {
-                    UITextView *text = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, cell.contentView.frame.size.width - 30, 170)];
+                    UITextView *text = [[UITextView alloc] initWithFrame:CGRectMake(15, 15, self.view.frame.size.width - 30, 170)];
                     text.attributedText = [[NSAttributedString alloc] initWithString:@""
                                                                                       attributes:@{
                                                                                                    NSForegroundColorAttributeName: [UIColor lightGrayColor],
@@ -94,7 +150,7 @@
         }
         case ACTIONSECTION:
         {
-            UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+            UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
             button.backgroundColor = [UIColor colorWithRed:0.63 green:0.75 blue:0.16 alpha:.9];
             button.titleLabel.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
             [button setTitle:@"发表" forState:UIControlStateNormal];
@@ -107,7 +163,7 @@
         }
         case STARSECTION:
         {
-            _control = [[JSFavStarControl alloc] initWithLocation:CGPointMake((self.view.frame.size.width - 200) / 2.0, 5)
+            _control = [[JSFavStarControl alloc] initWithLocation:CGPointMake((self.view.frame.size.width - 200) / 2.0, 10)
                                                                           dotImage:[UIImage imageNamed:@"marker14"]
                                                                          starImage:[UIImage imageNamed:@"marker14"]];
                         [cell addSubview:_control];
@@ -205,9 +261,14 @@
             rowHeight = 200;
             break;
         }
+        case PHOTOSECTION:
+        {
+            rowHeight = 100;
+            break;
+        }
         default:
         {
-            rowHeight = 40;
+            rowHeight = 44;
             break;
         }
     }
@@ -227,80 +288,94 @@
     [self.view endEditing:YES];
     if (!_review || !_price || !_star) {
         AlertView *alert = [[AlertView alloc] init];
-        [alert showCustomErrorWithTitle:@"错误" message:@"评价，评分或者价格没有选择" cancelButton:@"确定"];
+        [alert showCustomErrorWithTitle:@"错误" message:@"没有填写评价，评分或者没有选择价格" cancelButton:@"确定"];
         return;
     }
-    if (_review.length < 10) {
+    if (_review.length < 5) {
         AlertView *alert = [[AlertView alloc] init];
-        [alert showCustomErrorWithTitle:@"注意" message:@"低于十个字的评价可能不会显示" cancelButton:@"确定"];
+        [alert showCustomErrorWithTitle:@"注意" message:@"低于五个字的评价可能不会显示" cancelButton:@"确定"];
         return;
     }
     NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
     NSString *username = [userInfo objectForKey:@"username"];
     NSString *password = [userInfo objectForKey:@"password"];
-
-    // 1 start a post data
-    NSString *post = [NSString stringWithFormat:@"username=%@&password=%@&review=%@&star=%li&price=%li&restaurantID=%li",username,password,_review,(long)_star,(long)_price,(long)_restaurantID];
     
-    NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding
-                          allowLossyConversion:YES];
-    NSLog(@"%@",post);
-    // 2 get data length
-    NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[postData length]];
-    // 3 create url request
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    NSURL *url = [NSURL URLWithString:@"http://xun-wei.com/app/review/"];
-    [request setURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:postData];
-    // 4 create connection
-    __unused NSURLConnection *conn = [[NSURLConnection alloc]initWithRequest:request
-                                                                    delegate:self
-                                                            startImmediately:YES];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    NSDictionary *param = @{@"username":username,
+                            @"password":password,
+                            @"review":_review,
+                            @"star":[NSNumber numberWithInt:(int)_star] ,
+                            @"price":[NSNumber numberWithInt:(int)_price],
+                            @"restaurantID":[NSNumber numberWithInt:(int)_restaurantID]};
+    [manager POST:@"http://xun-wei.com/app/review/"
+       parameters:param constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+           for (int i = 0; i < [_photoArray count]; i++) {
+               NSData *imageData = [_photoArray objectAtIndex:i];
+               [formData appendPartWithFileData:imageData
+                                           name:@"photo"
+                                       fileName:@"photo.jpg"
+                                       mimeType:@"image/jpeg"];
+           }
+           
+       }
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              [hud setHidden:YES];
+              NSDictionary *dict = responseObject;
+              
+              NSInteger status = [[dict objectForKey:@"status"] integerValue];
+              NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
+              
+              if (status == 1) {
+                  NSUInteger index = [self.navigationController.viewControllers indexOfObject:self];
+                  
+                  [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:index - 1] animated:YES];
+              } else {
+                  AlertView *alert = [[AlertView alloc] init];
+                  [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              [hud setHidden:YES];
+              NSLog(@"Error: %@", error);
+          }];
+
 }
 
-#pragma mark - conntection delegate
+#pragma mark - redirect
 
-// data receive part
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    incomingData = nil;
-    if (!incomingData) {
-        incomingData = [[NSMutableData alloc] init];
+- (void)redirectToCameraView {
+    ReviewCameraViewController *vc = [[ReviewCameraViewController alloc] init];
+    vc.delegate = self;
+    [vc setSourceType:UIImagePickerControllerSourceTypeCamera];
+    [self presentViewController:vc animated:YES completion:^{}];
+}
+
+- (void)redirectToGalleryView {
+    ReviewGalleryViewController *vc = [[ReviewGalleryViewController alloc] init];
+    [vc setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+    vc.delegate = self;
+    [vc setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    [vc setAllowsEditing:YES];
+    [self presentViewController:vc animated:YES completion:^{}];
+}
+
+#pragma mark - photopicker
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [picker dismissViewControllerAnimated:YES completion:^{}];
+    
+    UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.5);
+    if (!_photoArray) {
+        _photoArray = [[NSMutableArray alloc] init];
     }
+    [_photoArray addObject:imageData];
     
-    [incomingData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    
-    AlertView *alert = [[AlertView alloc] init];
-    [alert showCustomErrorWithTitle:@"错误" message:@"网络连接错误" cancelButton:@"确定"];
-}
-
-// 数据全部接受完毕
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    NSError *error = nil;
-    
-    NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:incomingData
-                                                                options:kNilOptions
-                                                                  error:&error];
-    NSInteger status = [[dict objectForKey:@"status"] integerValue];
-    NSString *msg = [NSString stringWithFormat:@"%@", [dict objectForKey:@"msg"]];
-
-    if (status == 1) { // login success
-        NSUInteger index = [self.navigationController.viewControllers indexOfObject:self];
-        
-        [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:index - 1] animated:YES];
-        
-    } else { // unexplained error
-        AlertView *alert = [[AlertView alloc] init];
-        [alert showCustomErrorWithTitle:@"错误" message:msg cancelButton:@"确定"];
-        
-    }
+    NSRange range = NSMakeRange(1, 1);
+    NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+    [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
 }
 
 /*

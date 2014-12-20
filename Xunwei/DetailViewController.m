@@ -1,11 +1,12 @@
 
 #define MULTIPLIER 1
-#define SECTIONNUM 4
+#define SECTIONNUM 5
 
 #define IMAGESECTION 0
 #define INFOSECTION 1
-#define REVIEWSECTION 2
-#define MAPSECTION 3
+#define REVIEWSECTION 3
+#define MAPSECTION 4
+#define PHOTOSECTION 2
 
 #define TITLE 0
 #define IMAGE 1
@@ -17,6 +18,8 @@
 #define PRICE 3
 #define SUBCATEGORY 4
 #define DESCRIPTION 5
+
+#define NUMOFPHOTOPERLINE 4
 
 #import "DetailViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
@@ -66,8 +69,8 @@
         NSError *error;
         NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
         if (data != nil) {
-            [hud setHidden:YES];
             dispatch_async(dispatch_get_main_queue(), ^{
+                [hud setHidden:YES];
                 NSError *error;
                 NSMutableArray *array = [NSJSONSerialization JSONObjectWithData:data
                                                                         options:kNilOptions
@@ -162,6 +165,9 @@
         case MAPSECTION:
             sectionName = @"地图";
             break;
+        case PHOTOSECTION:
+            sectionName = @"全部图片";
+            break;
         default:
             sectionName = @"";
             break;
@@ -192,6 +198,11 @@
             break;
         }
         case MAPSECTION:
+        {
+            rowNum = 1;
+            break;
+        }
+        case PHOTOSECTION:
         {
             rowNum = 1;
             break;
@@ -230,6 +241,16 @@
                 }
             }
             
+            break;
+        }
+        case PHOTOSECTION:
+        {
+            float photoWidth = (self.view.frame.size.width - 5) / NUMOFPHOTOPERLINE - 5;
+            NSArray *photoArray = [_dict objectForKey:@"review_photo"];
+            rowHeight = 5 + ceil((float)([photoArray count] + 1) / NUMOFPHOTOPERLINE) * (photoWidth + 5);
+            if ([photoArray count] == 0) {
+                rowHeight = 10 + photoWidth;
+            }
             break;
         }
         case INFOSECTION:
@@ -322,6 +343,30 @@
                                                          reuseIdentifier:@"Cell"];
     if (_dict) {
         switch (indexPath.section) {
+            case PHOTOSECTION:
+            {
+                NSArray *photoArray = [_dict objectForKey:@"review_photo"];
+                float photoWidth = (self.view.frame.size.width - 5) / NUMOFPHOTOPERLINE - 5;
+                
+                for (int i = 0; i < [photoArray count]; i++) {
+                    NSDictionary *photoDict = [photoArray objectAtIndex:i];
+                    UIImageView *photo = [[UIImageView alloc] initWithFrame:CGRectMake(5 + (5 + photoWidth) * (i%4), 5 + (5 + photoWidth) * (ceil((float)(i + 1)/NUMOFPHOTOPERLINE) - 1), photoWidth, photoWidth)];
+                    [photo sd_setImageWithURL:[photoDict objectForKey:@"photo"]];
+                    [myCellView addSubview:photo];
+                }
+                
+                UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(5 + (5 + photoWidth) * ([photoArray count]%4), 5 + (5 + photoWidth) * (ceil((float)([photoArray count] + 1)/NUMOFPHOTOPERLINE) - 1), photoWidth, photoWidth)];
+                [button setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.96 alpha:1]];
+                [button.layer setBorderColor:[UIColor colorWithRed:0.85 green:0.85 blue:0.86 alpha:1].CGColor];
+                [button.layer setBorderWidth:0.5f];
+                [button addTarget:self action:@selector(redirectToReviewView) forControlEvents:UIControlEventTouchUpInside];
+                UIImageView *plusView = [[UIImageView alloc] initWithFrame:CGRectMake(photoWidth/2 - 15, photoWidth/2 - 15, 30, 30)];
+                plusView.image = [UIImage imageNamed:@"plus30"];
+                [button addSubview:plusView];
+                [myCellView addSubview:button];
+                
+                break;
+            }
             case IMAGESECTION:
             {
                 switch (indexPath.row) {
@@ -346,10 +391,9 @@
                     }
                     case IMAGE:
                     {
-                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 20.0, self.view.frame.size.width * 3.0 / 4.0)];
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width * 3.0 / 4.0)];
                         imageView.contentMode = UIViewContentModeScaleAspectFill;
                         imageView.clipsToBounds = YES;
-                        imageView.layer.cornerRadius = 4.0;
                         
                         // start a new image download manager
                         NSURL *photo_URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@",[_dict objectForKey:@"photo"]]];

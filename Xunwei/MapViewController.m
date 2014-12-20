@@ -11,8 +11,9 @@
 #import "MarkerAnnotation.h"
 #import "PanelViewOnMap.h"
 #import "DetailViewController.h"
-#import "GetRestaurants.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <MBProgressHUD/MBProgressHUD.h> // progress indicator
+#import "AlertView.h"
 
 @interface MapViewController () <CLLocationManagerDelegate>
 
@@ -76,17 +77,41 @@
 }
 
 - (void)loadData:(NSString *)text {
-    GetRestaurants *GR = [[GetRestaurants alloc] init];
-    NSString *urlString = [NSString new];
-    urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:urlString];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    __unused NSURLConnection *fetchConn = [[NSURLConnection alloc] initWithRequest:request
-                                                                          delegate:GR
-                                                                  startImmediately:YES];
-    // 回调关键
-    GR.delegate2 = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // send url request
+        NSString *urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSError *error;
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
+        if (data != nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hide:YES];
+                
+                NSError *error = nil;
+                
+                // 先输出array，然后第0位的才是dict
+                NSMutableArray *array = [NSJSONSerialization JSONObjectWithData:data
+                                                                        options:kNilOptions
+                                                                          error:&error];
+                
+                // store to local
+                NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+                [userInfo setValue:array forKey:@"restaurants"];
+                [userInfo synchronize];
+                
+                // load complete
+                [self loadComplete];
+                
+            });
+        } else {
+            [hud hide:YES];
+            AlertView *alert = [[AlertView alloc] init];
+            [alert showCustomErrorWithTitle:@"错误" message:@"请检查您的网络连接" cancelButton:@"好的"];
+        }
+        
+    });
 }
 
 - (void)loadComplete {

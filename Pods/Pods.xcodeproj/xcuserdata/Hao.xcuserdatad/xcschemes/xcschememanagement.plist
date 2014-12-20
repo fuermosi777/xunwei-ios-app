@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-DACircularProgress.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-GBVersionTracking.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -19,7 +24,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-MWPhotoBrowser.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-NYXImagesKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-PSTCollectionView.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -37,32 +52,47 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1D8FD0868924C86BFD1DCA25</key>
+		<key>5E9B32169FDDCDB7B0A165C3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>28CE636DEB8A433526C9C497</key>
+		<key>7612D0939925189D0F7B5D52</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>70D726EE164B3FE8716B75BE</key>
+		<key>786BB2A42DB300AC536D823F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7ABEE16C704C4D13C79BF410</key>
+		<key>7952030E4AC5D1618B21733F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>91C0EC7E5942524B650E54E0</key>
+		<key>D59729BC7C9532EAB348A7C3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B74C60356E982C019B595E9D</key>
+		<key>DBF0C39F4D8B44C2BA3F20BA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E90CCBD750149D2CD940B8F5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F964088A570D40B09BFFF5EF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F99F3E1B094A9F6953D0ECE2</key>
 		<dict>
 			<key>primary</key>
 			<true/>

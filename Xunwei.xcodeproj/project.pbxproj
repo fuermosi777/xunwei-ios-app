@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F29F23C1A45394A00F976BF /* ReviewCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F29F23B1A45394A00F976BF /* ReviewCameraViewController.m */; };
+		3F29F2421A4539F400F976BF /* ReviewGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F29F2411A4539F400F976BF /* ReviewGalleryViewController.m */; };
 		3F2F678A1A37DF67003F9D21 /* ImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F2F67891A37DF67003F9D21 /* ImagePickerController.m */; };
 		3F8073BB1A3A097400A59E2D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3F8073BA1A3A097400A59E2D /* LaunchScreen.xib */; };
 		3F8073BE1A3A0E2D00A59E2D /* AdScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8073BD1A3A0E2D00A59E2D /* AdScrollView.m */; };
@@ -38,7 +40,6 @@
 		3FEFE8BC1A2653D800ACFBF4 /* AboutTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE89F1A2653D800ACFBF4 /* AboutTableViewController.m */; };
 		3FEFE8BD1A2653D800ACFBF4 /* AlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8A11A2653D800ACFBF4 /* AlertView.m */; };
 		3FEFE8BE1A2653D800ACFBF4 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8A31A2653D800ACFBF4 /* DetailViewController.m */; };
-		3FEFE8BF1A2653D800ACFBF4 /* GetRestaurants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8A51A2653D800ACFBF4 /* GetRestaurants.m */; };
 		3FEFE8C01A2653D800ACFBF4 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8A71A2653D800ACFBF4 /* HomeViewController.m */; };
 		3FEFE8C11A2653D800ACFBF4 /* JSFavStarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8A91A2653D800ACFBF4 /* JSFavStarControl.m */; };
 		3FEFE8C21A2653D800ACFBF4 /* ListItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEFE8AB1A2653D800ACFBF4 /* ListItemView.m */; };
@@ -64,6 +65,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3F29F23A1A45394A00F976BF /* ReviewCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReviewCameraViewController.h; sourceTree = "<group>"; };
+		3F29F23B1A45394A00F976BF /* ReviewCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReviewCameraViewController.m; sourceTree = "<group>"; };
+		3F29F2401A4539F400F976BF /* ReviewGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReviewGalleryViewController.h; sourceTree = "<group>"; };
+		3F29F2411A4539F400F976BF /* ReviewGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReviewGalleryViewController.m; sourceTree = "<group>"; };
 		3F2F67881A37DF67003F9D21 /* ImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePickerController.h; sourceTree = "<group>"; };
 		3F2F67891A37DF67003F9D21 /* ImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePickerController.m; sourceTree = "<group>"; };
 		3F8073BA1A3A097400A59E2D /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -127,8 +132,6 @@
 		3FEFE8A11A2653D800ACFBF4 /* AlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertView.m; sourceTree = "<group>"; };
 		3FEFE8A21A2653D800ACFBF4 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		3FEFE8A31A2653D800ACFBF4 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
-		3FEFE8A41A2653D800ACFBF4 /* GetRestaurants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetRestaurants.h; sourceTree = "<group>"; };
-		3FEFE8A51A2653D800ACFBF4 /* GetRestaurants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetRestaurants.m; sourceTree = "<group>"; };
 		3FEFE8A61A2653D800ACFBF4 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		3FEFE8A71A2653D800ACFBF4 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		3FEFE8A81A2653D800ACFBF4 /* JSFavStarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSFavStarControl.h; sourceTree = "<group>"; };
@@ -274,8 +277,6 @@
 				3FEFE8BB1A2653D800ACFBF4 /* UserTableViewController.m */,
 				3FEFE8A21A2653D800ACFBF4 /* DetailViewController.h */,
 				3FEFE8A31A2653D800ACFBF4 /* DetailViewController.m */,
-				3F2F67881A37DF67003F9D21 /* ImagePickerController.h */,
-				3F2F67891A37DF67003F9D21 /* ImagePickerController.m */,
 				3FEFE8B01A2653D800ACFBF4 /* NavigationViewController.h */,
 				3FEFE8B11A2653D800ACFBF4 /* NavigationViewController.m */,
 				3F8073BF1A3A1C7200A59E2D /* WebViewController.h */,
@@ -284,6 +285,12 @@
 				3F8073C91A3A4D1100A59E2D /* RestaurantListTableViewController.m */,
 				3F97EE7A1A44E152000CA6DD /* SearchViewController.h */,
 				3F97EE7B1A44E152000CA6DD /* SearchViewController.m */,
+				3F2F67881A37DF67003F9D21 /* ImagePickerController.h */,
+				3F2F67891A37DF67003F9D21 /* ImagePickerController.m */,
+				3F29F23A1A45394A00F976BF /* ReviewCameraViewController.h */,
+				3F29F23B1A45394A00F976BF /* ReviewCameraViewController.m */,
+				3F29F2401A4539F400F976BF /* ReviewGalleryViewController.h */,
+				3F29F2411A4539F400F976BF /* ReviewGalleryViewController.m */,
 			);
 			name = "View controller";
 			sourceTree = "<group>";
@@ -331,8 +338,6 @@
 				3FEFE8801A2650BD00ACFBF4 /* Main.storyboard */,
 				3F8073BA1A3A097400A59E2D /* LaunchScreen.xib */,
 				3FEFE8831A2650BD00ACFBF4 /* Images.xcassets */,
-				3FEFE8A41A2653D800ACFBF4 /* GetRestaurants.h */,
-				3FEFE8A51A2653D800ACFBF4 /* GetRestaurants.m */,
 				3FEFE8A81A2653D800ACFBF4 /* JSFavStarControl.h */,
 				3FEFE8A91A2653D800ACFBF4 /* JSFavStarControl.m */,
 				3FEFE8761A2650BD00ACFBF4 /* Supporting Files */,
@@ -536,7 +541,6 @@
 				3FEFE8C81A2653D800ACFBF4 /* SigninTableViewController.m in Sources */,
 				3FEFE8BE1A2653D800ACFBF4 /* DetailViewController.m in Sources */,
 				3F8073C41A3A362000A59E2D /* LikeButton.m in Sources */,
-				3FEFE8BF1A2653D800ACFBF4 /* GetRestaurants.m in Sources */,
 				3FEFE8C91A2653D800ACFBF4 /* SingupTableViewController.m in Sources */,
 				3FEFE8C11A2653D800ACFBF4 /* JSFavStarControl.m in Sources */,
 				3FEFE87C1A2650BD00ACFBF4 /* AppDelegate.m in Sources */,
@@ -550,10 +554,12 @@
 				3FEFE8BC1A2653D800ACFBF4 /* AboutTableViewController.m in Sources */,
 				3F8073BE1A3A0E2D00A59E2D /* AdScrollView.m in Sources */,
 				3F8073C11A3A1C7200A59E2D /* WebViewController.m in Sources */,
+				3F29F23C1A45394A00F976BF /* ReviewCameraViewController.m in Sources */,
 				3FEFE8C71A2653D800ACFBF4 /* ReviewTableViewController.m in Sources */,
 				3FEFE8C51A2653D800ACFBF4 /* NavigationViewController.m in Sources */,
 				3FEFE8C31A2653D800ACFBF4 /* MapViewController.m in Sources */,
 				3FEFE8C01A2653D800ACFBF4 /* HomeViewController.m in Sources */,
+				3F29F2421A4539F400F976BF /* ReviewGalleryViewController.m in Sources */,
 				3FEFE8791A2650BD00ACFBF4 /* main.m in Sources */,
 				3FCDD1D51A34EA9300315137 /* SelectorScrollView.m in Sources */,
 				3FCDD1D81A34F17B00315137 /* PointerView.m in Sources */,

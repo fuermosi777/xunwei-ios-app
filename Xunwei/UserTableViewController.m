@@ -295,7 +295,7 @@
                 switch (indexPath.row) {
                     case 0:
                     {
-                        UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                         [button setBackgroundColor:[UIColor clearColor]];
                         [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
                         [button setTitle:@"登出" forState:UIControlStateNormal];
@@ -308,7 +308,7 @@
                     }
                     case 1:
                     {
-                        UIButton *button = [[UIButton alloc] initWithFrame:cell.bounds];
+                        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
                         [button setBackgroundColor:[UIColor clearColor]];
                         [button setTitleColor: [UIColor grayColor] forState:UIControlStateNormal];
                         [button setTitle:@"关于" forState:UIControlStateNormal];
