@@ -213,6 +213,7 @@
 
 - (void)sliderChanged:(UISlider *)sender {
     _price = sender.value;
+    
     NSString *text = [NSString new];
     if (_price < 1.5) {
         text = @"低于$10";

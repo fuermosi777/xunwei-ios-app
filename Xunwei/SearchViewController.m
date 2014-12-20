@@ -142,7 +142,7 @@
     } else { // not first time
         [historyArray addObjectsFromArray:[userInfo objectForKey:@"searchHistory"]];
         if ([historyArray indexOfObject:keyword] == NSNotFound) {
-            if ([historyArray count] <= MAXHISTORY) {
+            if ([historyArray count] == MAXHISTORY) {
                 [historyArray removeObjectAtIndex:0];
             }
             [historyArray addObject:keyword];

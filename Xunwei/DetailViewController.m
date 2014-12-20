@@ -23,8 +23,6 @@
 
 #import "DetailViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <MapKit/MapKit.h>
-#import "MarkerAnnotation.h"
 #import "SigninTableViewController.h"
 #import "ReviewTableViewController.h"
 #import "UMSocial.h"
@@ -609,41 +607,21 @@
             }
             case MAPSECTION:
             {
-                // 地图
-                _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
-                _mapView.showsUserLocation = YES;
-                _mapView.showsPointsOfInterest = NO;
-                _mapView.delegate = self;
-                
-                [myCellView addSubview:_mapView];
-                
-                // location manager
-                _locationManager = [[CLLocationManager alloc] init];
-                _locationManager.delegate = self;
-                if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                    [self.locationManager requestWhenInUseAuthorization];
-                }
-                [_locationManager startUpdatingLocation];
-                
-                // set region and zoom
+                // set region and zoom & add snapshot
                 CLLocationCoordinate2D startCoord;
                 startCoord.latitude = [[_dict objectForKey:@"latitude"] doubleValue];
                 startCoord.longitude = [[_dict objectForKey:@"longitude"] doubleValue];
-                [_mapView setRegion:MKCoordinateRegionMakeWithDistance(startCoord, 100, 100) animated:YES];
                 
-                // marker
-                MarkerAnnotation *marker = [[MarkerAnnotation alloc] initWithLocation:startCoord title:@"" subTitle:@""];
-                [_mapView addAnnotation:marker];
+                NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?center=%f,%f&scale=2&zoom=16&size=%lix200&sensor=true",startCoord.latitude, startCoord.longitude,(long)(self.view.frame.size.width)];
+                NSURL *mapUrl = [NSURL URLWithString:[staticMapUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                UIImageView *mapView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
+                [mapView sd_setImageWithURL:mapUrl];
+                [myCellView addSubview:mapView];
                 
-                // focus button
-                UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-                button.layer.cornerRadius = 18.0f;
-                button.clipsToBounds = YES;
-                [button setImage:[UIImage imageNamed:@"marker"] forState:UIControlStateNormal];
-                button.backgroundColor = [UIColor colorWithRed:0.99 green:0.65 blue:0.18 alpha:0.9];
-                [button addTarget:self action:@selector(focusMe) forControlEvents:UIControlEventTouchUpInside];
-                
-                [myCellView addSubview:button];
+                // add marker
+                UIImageView *markerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mapannotation"]];
+                [markerView setCenter:CGPointMake(self.view.frame.size.width / 2, 100)];
+                [mapView addSubview:markerView];
                 
                 // address detail
                 UILabel *address = [[UILabel alloc] initWithFrame:CGRectMake(10, 140, self.view.frame.size.width - 20, 40)];
@@ -715,33 +693,6 @@
     } else {
         return NO;
     }
-}
-
-- (void)focusMe {
-    MKCoordinateRegion region;
-    region.center = _mapView.userLocation.coordinate;
-    region.span = MKCoordinateSpanMake(0.001, 0.001);
-    
-    region = [_mapView regionThatFits:region];
-    [_mapView setRegion:region animated:YES];
-}
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Marker"];
-    
-    if ([annotation isKindOfClass:[MarkerAnnotation class]]) {
-        
-        annotationView.image = [UIImage imageNamed:@"mapannotation"];
-        
-        //annotationView.animatesDrop = YES;
-        
-        annotationView.canShowCallout = NO;
-        
-    } else {
-        annotationView.canShowCallout = NO;
-        annotationView = nil;
-    }
-    return annotationView;
 }
 
 - (void)openMap {

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>寻味纽约</string>
+	<string>寻味美国</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -34,11 +34,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.1.6</string>
+	<string>1.1.7</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>寻味需要开启您的地理位置以便定位</string>
+	<string>寻味需要您的地理位置以便帮助查找附近的餐馆</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>XinGothic.ttf</string>

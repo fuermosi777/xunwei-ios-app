@@ -231,7 +231,7 @@
     [self.view addSubview:_mapSnapshotView];
     
     // fill image into block
-    [self snapshotMapView:_mapSnapshotView];
+    [self snapshotMapView];
     
     // add transparent overlay
     UIView *overlay = [[UIView alloc] initWithFrame:_mapSnapshotView.bounds];
@@ -317,7 +317,7 @@
     return cell;
 }
 
-- (void)snapshotMapView:(UIImageView *)imageView {
+- (void)snapshotMapView {
     float latitude, longitude;
     if ([_array count] > 0) {
         NSDictionary *dict = [_array objectAtIndex:0];
@@ -330,8 +330,7 @@
     
     NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?center=%f,%f&scale=2&zoom=15&size=%lix80&sensor=true",latitude, longitude,(long)(self.view.frame.size.width)];
     NSURL *mapUrl = [NSURL URLWithString:[staticMapUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    UIImage *image = [UIImage imageWithData: [NSData dataWithContentsOfURL:mapUrl]];
-    imageView.image = image;
+    [_mapSnapshotView sd_setImageWithURL:mapUrl];
 }
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -361,6 +360,8 @@
 }
 
 - (void)loadData:(NSString *)text {
+    [self snapshotMapView];
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

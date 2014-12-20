@@ -9,15 +9,13 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface DetailViewController : UIViewController <MKMapViewDelegate, UITableViewDataSource,UITableViewDelegate>
+@interface DetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
 
 @property (strong, nonatomic) NSMutableDictionary *dict;
 @property NSInteger ID;
-@property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) NSMutableArray *reviewArray;
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) UIImage *image; // restaurant image
-@property (strong, nonatomic) CLLocationManager *locationManager;
 
 - (id)initWithID:(NSInteger) ID;
 
