@@ -13,6 +13,7 @@
 		3F8073C11A3A1C7200A59E2D /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8073C01A3A1C7200A59E2D /* WebViewController.m */; };
 		3F8073C41A3A362000A59E2D /* LikeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8073C31A3A362000A59E2D /* LikeButton.m */; };
 		3F8073CA1A3A4D1100A59E2D /* RestaurantListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8073C91A3A4D1100A59E2D /* RestaurantListTableViewController.m */; };
+		3F97EE7C1A44E152000CA6DD /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F97EE7B1A44E152000CA6DD /* SearchViewController.m */; };
 		3FB410601A31658A00CF1963 /* UMSocialLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FB410461A31658A00CF1963 /* UMSocialLocalizable.strings */; };
 		3FB410611A31658A00CF1963 /* libUMSocial_Sdk_4.2.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FB410541A31658A00CF1963 /* libUMSocial_Sdk_4.2.1.a */; };
 		3FB410621A31658A00CF1963 /* UMSCommentDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3FB410561A31658A00CF1963 /* UMSCommentDetailController.xib */; };
@@ -75,6 +76,8 @@
 		3F8073C81A3A4D1100A59E2D /* RestaurantListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestaurantListTableViewController.h; sourceTree = "<group>"; };
 		3F8073C91A3A4D1100A59E2D /* RestaurantListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestaurantListTableViewController.m; sourceTree = "<group>"; };
 		3F8BE7E81A31627A009204AB /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		3F97EE7A1A44E152000CA6DD /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
+		3F97EE7B1A44E152000CA6DD /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		3FB410471A31658A00CF1963 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UMSocialLocalizable.strings; sourceTree = "<group>"; };
 		3FB410491A31658A00CF1963 /* UMSocial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocial.h; sourceTree = "<group>"; };
 		3FB4104A1A31658A00CF1963 /* UMSocialAccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMSocialAccountManager.h; sourceTree = "<group>"; };
@@ -279,6 +282,8 @@
 				3F8073C01A3A1C7200A59E2D /* WebViewController.m */,
 				3F8073C81A3A4D1100A59E2D /* RestaurantListTableViewController.h */,
 				3F8073C91A3A4D1100A59E2D /* RestaurantListTableViewController.m */,
+				3F97EE7A1A44E152000CA6DD /* SearchViewController.h */,
+				3F97EE7B1A44E152000CA6DD /* SearchViewController.m */,
 			);
 			name = "View controller";
 			sourceTree = "<group>";
@@ -431,6 +436,7 @@
 				TargetAttributes = {
 					3FEFE8721A2650BC00ACFBF4 = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = CFR9F99TN9;
 					};
 					3FEFE88B1A2650BD00ACFBF4 = {
 						CreatedOnToolsVersion = 6.1;
@@ -539,6 +545,7 @@
 				3FEFE8C21A2653D800ACFBF4 /* ListItemView.m in Sources */,
 				3F8073CA1A3A4D1100A59E2D /* RestaurantListTableViewController.m in Sources */,
 				3FEFE8C41A2653D800ACFBF4 /* MarkerAnnotation.m in Sources */,
+				3F97EE7C1A44E152000CA6DD /* SearchViewController.m in Sources */,
 				3FEFE8C61A2653D800ACFBF4 /* PanelViewOnMap.m in Sources */,
 				3FEFE8BC1A2653D800ACFBF4 /* AboutTableViewController.m in Sources */,
 				3F8073BE1A3A0E2D00A59E2D /* AdScrollView.m in Sources */,

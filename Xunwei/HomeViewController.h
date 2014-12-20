@@ -10,19 +10,15 @@
 #import <MapKit/MapKit.h>
 #import "SelectorScrollView.h"
 #import "AdScrollView.h"
+#import <MBProgressHUD/MBProgressHUD.h> // progress indicator
 
 @class SelectorScrollView;
 @class AdScrollView;
 
 @interface HomeViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate>
 
-@property (strong, nonatomic) UIActivityIndicatorView *indicator;
-
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSMutableArray *array; // all restaurants info
-@property (nonatomic, assign) id currentResponder;
-@property (strong, nonatomic) UIView *inputOverlay;
-@property (strong, nonatomic) UITextField *textField;
 @property (strong, nonatomic) SelectorScrollView *navScrollView;
 @property (nonatomic, assign) CGFloat lastContentOffset;
 @property (strong, nonatomic) UIImageView *mapSnapshotView;
@@ -33,6 +29,10 @@
 @property (strong, nonatomic) UIImage *avatarImage;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
+@property (strong, nonatomic) CLLocation *currentLocation;
+@property (strong, nonatomic) MBProgressHUD *hud;
+
+@property (strong, nonatomic) UITextField *textField;
 
 - (void)loadData:(NSString *)text;
 - (void)loadComplete;

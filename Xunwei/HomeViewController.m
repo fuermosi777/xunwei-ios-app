@@ -8,12 +8,11 @@
 
 #define NAVIGATIONHEIGHT 64
 #define LISTITEMHEIGHT 80
-#define MAPHEIGHT 100
+#define MAPHEIGHT 80
 #define NAVBARHEIGHT 40
 #define ADHEIGHT 80
 
 #import "HomeViewController.h"
-#import "GetRestaurants.h"
 #import "ListItemView.h"
 #import "DetailViewController.h"
 #import <MapKit/MapKit.h>
@@ -24,6 +23,9 @@
 #import <NYXImagesKit/NYXImagesKit.h>
 #import "SelectorScrollView.h"
 #import "AdScrollView.h"
+#import <MBProgressHUD/MBProgressHUD.h> // progress indicator
+#import "SearchViewController.h"
+#import "AlertView.h"
 
 @interface HomeViewController ()
 
@@ -40,13 +42,10 @@
     [self locateSelf];
     [self addRightButton];
     [self addMapSnapshot];
+    [self addSearchField];
     [self addNavbar];
     [self addAd];
     [self addTable];
-    
-    if (!_indicator) {
-        [self initActivityIndicator];
-    }
     
     [self addAvatar];
     
@@ -72,11 +71,14 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     [self.locationManager stopUpdatingLocation];
+    _currentLocation = newLocation;
     [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&lng=%f&lat=%f&span=%f",newLocation.coordinate.longitude,newLocation.coordinate.latitude,0.05]];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    NSLog(@"locationManager:%@ didFailWithError:%@", manager, error);
+    NSLog(@"%@",error);
+    AlertView *alert = [[AlertView alloc] init];
+    [alert showCustomErrorWithTitle:@"错误" message:@"无法定位您的位置，请确保寻味的定位许可已经开启" cancelButton:@"好的"];
 }
 
 #pragma mark - action
@@ -85,7 +87,7 @@
     if ([[notification name] isEqualToString:@"SelectButtonTappedNotification"]){
         UIButton *button = (UIButton *) notification.object;
         if (![button.titleLabel.text isEqual:@"附近"]){
-            [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@", button.titleLabel.text]];
+            [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@&lat=%f&lng=%f&span=0.05", button.titleLabel.text, _currentLocation.coordinate.latitude, _currentLocation.coordinate.longitude]];
         } else {
             [_locationManager startUpdatingLocation];
         }
@@ -107,8 +109,7 @@
                                                            }
                                                           completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                                               if (image && finished) {
-                                                                  UIImage *imageScaled = [image scaleToFitSize:CGSizeMake(24, 24)];
-                                                                  _avatar.image = imageScaled;
+                                                                  _avatar.image = image;
                                                               }
                                                           }];
     } else {
@@ -119,7 +120,9 @@
 - (void)addAvatar {
     // navigationbar
     _avatar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
-    self.navigationController.navigationBar.topItem.titleView = _avatar;
+    UIBarButtonItem *avatarItem = [[UIBarButtonItem alloc] initWithCustomView:_avatar];
+    
+    self.navigationController.navigationBar.topItem.leftBarButtonItem = avatarItem;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chooseUserOrSignin)];
     [_avatar addGestureRecognizer:tap];
     [_avatar setUserInteractionEnabled:YES];
@@ -154,7 +157,7 @@
 }
 
 - (void)reloadView {
-    [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30"]];
+    [_locationManager startUpdatingLocation];
 }
 
 - (void)addRightButton {
@@ -180,7 +183,6 @@
     [UIView animateWithDuration:0.2
                      animations:^{
                          [_mapSnapshotView setFrame:CGRectMake(0, -100, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
-                         [_textField setFrame:CGRectMake(0, -100, _textField.frame.size.width, _textField.frame.size.height)];
                          [_navScrollView setFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
                          [_tableView setFrame:CGRectMake(0, NAVBARHEIGHT + NAVIGATIONHEIGHT, self.view.frame.size.width, self.view.frame.size.height - NAVIGATIONHEIGHT - NAVBARHEIGHT)];
                          [_adScrollView setFrame:CGRectMake(0, -100, _adScrollView.frame.size.width, ADHEIGHT)];
@@ -192,7 +194,6 @@
     [UIView animateWithDuration:0.2
                      animations:^{
                          [_mapSnapshotView setFrame:CGRectMake(0, NAVIGATIONHEIGHT + ADHEIGHT, _mapSnapshotView.frame.size.width, _mapSnapshotView.frame.size.height)];
-                         [_textField setFrame:CGRectMake(30, 55 + NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width - 60, 30)];
                          [_navScrollView setFrame:CGRectMake(0, MAPHEIGHT + NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width, NAVBARHEIGHT)];
                          [_tableView setFrame:CGRectMake(0, ADHEIGHT + MAPHEIGHT + NAVBARHEIGHT + NAVIGATIONHEIGHT, self.view.frame.size.width, self.view.frame.size.height - ADHEIGHT - MAPHEIGHT - NAVBARHEIGHT - NAVIGATIONHEIGHT)];
                          [_adScrollView setFrame:CGRectMake(0, NAVIGATIONHEIGHT, _adScrollView.frame.size.width, ADHEIGHT)];
@@ -200,6 +201,29 @@
 }
 
 # pragma mark - add
+
+- (void)addSearchField {
+    // add search box
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 130, 26)];
+    textField.backgroundColor = [UIColor whiteColor];
+    textField.textColor = [UIColor grayColor];
+    textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
+    textField.layer.cornerRadius = 13.0f;
+    textField.delegate = self;
+    textField.textAlignment = NSTextAlignmentCenter;
+    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"开始寻味"
+                                                                      attributes:@{
+                                                                                   NSForegroundColorAttributeName: [UIColor lightGrayColor],
+                                                                                   NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
+                                                                                   }
+                                       ];
+    // add search icon
+    UIImageView *searchIcon = [[UIImageView alloc] initWithFrame:CGRectMake(7, 5, 15, 15)];
+    [searchIcon setImage:[UIImage imageNamed:@"search"]];
+    [textField addSubview:searchIcon];
+    
+    self.navigationController.navigationBar.topItem.titleView = textField;
+}
 
 - (void)addMapSnapshot {
     // create snap shot block and add it to the view
@@ -215,7 +239,7 @@
     [_mapSnapshotView addSubview:overlay];
     
     // add address label
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.view.frame.size.width, 40)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 16 , self.view.frame.size.width, 40)];
     label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
     label.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
     label.text = @"在地图上查看";
@@ -229,26 +253,7 @@
     [_mapSnapshotView addGestureRecognizer:awesomeViewSingleFingerTap];
     [_mapSnapshotView setUserInteractionEnabled:YES];
     
-    // add search box
-    _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 55 + NAVIGATIONHEIGHT + ADHEIGHT, self.view.frame.size.width - 60, 30)];
-    _textField.backgroundColor = [UIColor whiteColor];
-    _textField.textColor = [UIColor grayColor];
-    _textField.font = [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14];
-    _textField.layer.cornerRadius = 4.0f;
-    _textField.delegate = self;
-    _textField.textAlignment = NSTextAlignmentCenter;
-    _textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"开始寻味"
-                                                                       attributes:@{
-                                                                                    NSForegroundColorAttributeName: [UIColor lightGrayColor],
-                                                                                    NSFontAttributeName : [UIFont fontWithName:@"XinGothic-CiticPress-Regular" size:14.0],
-                                                                                    }
-                                        ];
-    // add search icon
-    UIImageView *searchIcon = [[UIImageView alloc] initWithFrame:CGRectMake(7, 7, 15, 15)];
-    [searchIcon setImage:[UIImage imageNamed:@"search"]];
-    [_textField addSubview:searchIcon];
     
-    [self.view addSubview:_textField];
 }
 
 - (void)addAd {
@@ -323,65 +328,28 @@
         longitude = -73.9946707;
     }
     
-    NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?center=%f,%f&scale=2&zoom=15&size=%lix100&sensor=true",latitude, longitude,(long)(self.view.frame.size.width)];
+    NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?center=%f,%f&scale=2&zoom=15&size=%lix80&sensor=true",latitude, longitude,(long)(self.view.frame.size.width)];
     NSURL *mapUrl = [NSURL URLWithString:[staticMapUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     UIImage *image = [UIImage imageWithData: [NSData dataWithContentsOfURL:mapUrl]];
     imageView.image = image;
 }
 
-
-- (void)initActivityIndicator {
-    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [self.view addSubview:_indicator];
-    _indicator.hidesWhenStopped = YES;
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [self redirectToSearchView];
+    return NO;
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    // create overlay
-    _inputOverlay = [[UIView alloc] initWithFrame:self.view.bounds];
-    _inputOverlay.backgroundColor = [UIColor colorWithRed:0.17 green:0.17 blue:0.17 alpha:0.8f];
-    
-    //animation
-    [UIView transitionWithView:self.view duration:0.3
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^ { [self.view addSubview:_inputOverlay]; }
-                    completion:nil];
-    
-    
-    [self.view bringSubviewToFront:textField];
-    
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resignOnTap:)];
-    [singleTap setNumberOfTapsRequired:1];
-    [singleTap setNumberOfTouchesRequired:1];
-    [_inputOverlay addGestureRecognizer:singleTap];
-    
-    self.currentResponder = textField;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    _searchText = textField.text;
-    
-    if (_searchText) {
-        [_inputOverlay removeFromSuperview];
-        [textField resignFirstResponder];
-        
-        [self loadData:[NSString stringWithFormat:@"http://xun-wei.com/app/restaurants/?amount=30&keyword=%@",_searchText]];
-        [textField setText:nil];// clear textfield after click search button
-        return NO;
-    } else {
-        return YES;
-    }
+- (void)redirectToSearchView {
+    SearchViewController *vc = [[SearchViewController alloc] init];
+    [vc setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    vc.delegate = self;
+    [self presentViewController:vc animated:YES completion:^{}];
 }
 
 - (void)redirectToMapView {
     MapViewController *mapViewController = [[MapViewController alloc] init];
     // pass business detail info to vc
     [self.navigationController pushViewController:mapViewController animated:YES];
-}
-
-- (void)resignOnTap:(id)iSender {
-    [self.currentResponder resignFirstResponder];
-    [_inputOverlay removeFromSuperview];
 }
 
 - (void)redirectToDetailView:(UITapGestureRecognizer *)tap {
@@ -393,25 +361,50 @@
 }
 
 - (void)loadData:(NSString *)text {
-    [_indicator startAnimating];
-    GetRestaurants *GR = [[GetRestaurants alloc] init];
-    NSString *urlString = [NSString new];
-    urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:urlString];
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    __unused NSURLConnection *fetchConn = [[NSURLConnection alloc] initWithRequest:request
-                                                                          delegate:GR
-                                                                  startImmediately:YES];
-    // 回调关键
-    GR.delegate = self;
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // send url request
+        NSString *urlString = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSError *error;
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
+        if (data != nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hide:YES];
+
+                NSError *error = nil;
+                
+                // 先输出array，然后第0位的才是dict
+                NSMutableArray *array = [NSJSONSerialization JSONObjectWithData:data
+                                                                        options:kNilOptions
+                                                                          error:&error];
+                
+                // store to local
+                NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
+                [userInfo setValue:array forKey:@"restaurants"];
+                [userInfo synchronize];
+                
+                // load complete
+                [self loadComplete];
+                
+            });
+        } else {
+            [hud hide:YES];
+            AlertView *alert = [[AlertView alloc] init];
+            [alert showCustomErrorWithTitle:@"错误" message:@"请检查您的网络连接" cancelButton:@"好的"];
+        }
+        
+    });
 }
 
 - (void)loadComplete {
-    [_indicator stopAnimating];
     NSUserDefaults *userInfo = [NSUserDefaults standardUserDefaults];
     _array = [userInfo objectForKey:@"restaurants"];
-    
+    if ([_array count] < 1) {
+        AlertView *alert = [[AlertView alloc] init];
+        [alert showCustomErrorWithTitle:@"抱歉" message:@"没有找到任何餐厅" cancelButton:@"好的"];
+    }
     [_tableView reloadData];
 }
 

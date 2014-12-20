@@ -20,6 +20,7 @@
 #import <AFNetworking.h>
 #import "RestaurantListTableViewController.h"
 #import "AboutTableViewController.h"
+#import <MBProgressHUD/MBProgressHUD.h> // progress indicator
 
 @interface UserTableViewController ()
 
@@ -36,6 +37,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:YES];
     [self loadData];
 }
 
@@ -50,6 +52,8 @@
 
 #pragma mark - load data
 - (void)loadData {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // 1 start a post data
         NSString *post = [NSString stringWithFormat:@"username=%@",_username];
@@ -73,6 +77,7 @@
         
         if (data != nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hide:YES];
                 NSError *error;
                 NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
                                                                             options:kNilOptions
@@ -95,6 +100,7 @@
                 }
             });
         } else {
+            [hud hide:YES];
             NSLog(@"error!");
         }
         
